@@ -6,7 +6,9 @@
     "first-app": {
       "projectType": "application",
       "schematics": {
-		"skipTests": true
+		"@schematics/angular:component": {
+          "skipTests": true
+        }
 	  },
       "root": "",
       "sourceRoot": "src",
