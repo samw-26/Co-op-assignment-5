@@ -1,1 +1,13 @@
-<p>table works!</p>
+<div *ngIf="tableLoaded;">
+	<h3>{{tableName}} table</h3>
+	<table>
+		<thead>
+			<th *ngFor="let header of tableHeaders">{{header}}</th>
+		</thead>
+		<tbody>
+			<tr *ngFor="let row of tableData">
+				<td *ngFor="let col of tableHeaders">{{row[col]}}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
