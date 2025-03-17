@@ -1,10 +1,11 @@
 import { Component} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableService } from '../table.service';
-import {MatTableModule} from '@angular/material/table';
+import { RouterLink } from '@angular/router';
+
 @Component({
   selector: 'app-table',
-  imports: [CommonModule, MatTableModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './table.component.html',
   styleUrl: './table.component.css'
 })

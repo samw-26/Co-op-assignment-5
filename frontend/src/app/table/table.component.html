@@ -1,3 +1,4 @@
+<h1>Main Page</h1>
 <div *ngIf="tableLoaded;">
 	<h3>{{tableName}} table</h3>
 	<table>
@@ -6,7 +7,8 @@
 		</thead>
 		<tbody>
 			<tr *ngFor="let row of tableData">
-				<td *ngFor="let col of tableHeaders">{{row[col]}}</td>
+				<a routerLink="/{{row['au_id']}}"><td>{{row[tableHeaders[0]]}}</td></a>
+				<td *ngFor="let col of tableHeaders.slice(1)">{{row[col]}}</td>
 			</tr>
 		</tbody>
 	</table>
