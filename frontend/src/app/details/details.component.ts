@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { TableService } from '../table.service';
 import { CommonModule } from '@angular/common';
+import { TableComponent } from '../table/table.component';
 
 @Component({
   selector: 'app-details',
@@ -12,12 +13,11 @@ export class DetailsComponent {
 	@Input() id!: string;
 	tableData: { [key: string]: any}[] = [];
 	tableHeaders: string[] = [];
-	tableName: string = "authors";
 	tableLoaded: boolean = false;
 
 	constructor(private tblservice: TableService) {}
 	ngOnInit(): void {
-		this.tblservice.getRecord(this.tableName, this.id).subscribe((data: Object[]) => {
+		this.tblservice.getRecord(TableComponent.tableName, this.id).subscribe((data: Object[]) => {
 			this.tableData = data;
 			this.tableHeaders = Object.keys(data[0]);
 			this.tableLoaded = true;

@@ -1,13 +1,13 @@
 <h1>Main Page</h1>
 <div *ngIf="tableLoaded;">
-	<h3>{{tableName}} table</h3>
+	<h3>{{getTableName()}} table</h3>
 	<table>
 		<thead>
 			<th *ngFor="let header of tableHeaders">{{header}}</th>
 		</thead>
 		<tbody>
 			<tr *ngFor="let row of tableData">
-				<a routerLink="{{row[tableHeaders[0]]}}"><td>{{row[tableHeaders[0]]}}</td></a>
+				<a routerLink="{{row[tableHeaders[0]]}}" target=""><td>{{row[tableHeaders[0]]}}</td></a>
 				<td *ngFor="let col of tableHeaders.slice(1)">{{row[col]}}</td>
 			</tr>
 		</tbody>
