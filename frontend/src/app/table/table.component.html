@@ -7,7 +7,7 @@
 		</thead>
 		<tbody>
 			<tr *ngFor="let row of tableData">
-				<a routerLink="/{{row['au_id']}}"><td>{{row[tableHeaders[0]]}}</td></a>
+				<a routerLink="{{row[tableHeaders[0]]}}"><td>{{row[tableHeaders[0]]}}</td></a>
 				<td *ngFor="let col of tableHeaders.slice(1)">{{row[col]}}</td>
 			</tr>
 		</tbody>

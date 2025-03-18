@@ -1,1 +1,13 @@
-<p>details works!</p>
+<h1>Details Page</h1>
+<div *ngIf="tableLoaded;">
+	<table>
+		<thead>
+			<th *ngFor="let header of tableHeaders">{{header}}</th>
+		</thead>
+		<tbody>
+			<tr *ngFor="let row of tableData">
+				<td *ngFor="let col of tableHeaders">{{row[col]}}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

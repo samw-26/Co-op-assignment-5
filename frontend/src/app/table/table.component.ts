@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TableService } from '../table.service';
 import { RouterLink } from '@angular/router';
 
+
 @Component({
   selector: 'app-table',
   imports: [CommonModule, RouterLink],
@@ -15,7 +16,7 @@ export class TableComponent {
 	tableName: string = "authors";
 	tableLoaded: boolean = false;
 
-	constructor(private tblservice : TableService) {}
+	constructor(private tblservice: TableService) {}
 	ngOnInit(): void {
 		this.tblservice.getTable(this.tableName).subscribe((data: any) => {
 			this.tableData = data;
