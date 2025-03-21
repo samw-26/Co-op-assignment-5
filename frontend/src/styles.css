@@ -2,6 +2,15 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+div:has(> table){
+	overflow: auto;
+	white-space: nowrap;
+}
 td {
 	padding: 0px 20px 0px 20px;
+}
+input {
+	font-size: 1em;
+	width:8em;
+	text-align: center;
 }
