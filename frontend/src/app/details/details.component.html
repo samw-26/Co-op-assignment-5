@@ -6,7 +6,7 @@
 		</thead>
 		<tbody>
 			<tr>
-				<td *ngFor="let col of table_headers">
+				<td *ngFor="let col of tableHeaders">
 					<ng-container *ngIf="col === 'au_id'; then is_pkey else not_pkey"></ng-container>
 					<ng-template #is_pkey>
 						{{record[col]}}
@@ -19,3 +19,4 @@
 		</tbody>
 	</table>
 </div>
+<button mat-button>Update</button>

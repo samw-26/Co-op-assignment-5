@@ -14,3 +14,8 @@ input {
 	width:8em;
 	text-align: center;
 }
+button[mat-button] {
+	font-size: 1em;
+	margin-top: 15px;
+}
+
