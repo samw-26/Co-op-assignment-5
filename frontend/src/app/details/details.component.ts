@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableService } from '../table/table.service';
+import { PrimaryKey, Schema } from '../interfaces';
 
 @Component({
   selector: 'app-details',
@@ -13,6 +14,7 @@ export class DetailsComponent {
 	table_name: string = 'authors';
 	table_headers!: string[];
 	record!: { [index: string]: string};
+	table_schema!: Schema[]
 	table_pkey!: string;
 
 	constructor(private tblservice: TableService) {}
@@ -22,8 +24,11 @@ export class DetailsComponent {
 			this.record = row;
 			this.table_headers = Object.keys(row);
 		});
-		this.tblservice.getPkName(this.table_name).subscribe(data => {
-			this.table_pkey = data['COLUMN_NAME'];
+		this.tblservice.getPkName(this.table_name).subscribe((data: PrimaryKey) => {
+			this.table_pkey = data.COLUMN_NAME;
+		});
+		this.tblservice.getSchema(this.table_name).subscribe((data: Schema[]) => {
+			this.table_schema = data;
 		});
 	}
 }
