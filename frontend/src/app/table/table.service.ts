@@ -17,4 +17,8 @@ export class TableService {
 		return this.http.get<{ [index: string]: string }[]>(`${this.apiurl}/${table}/${id}`).pipe(map(obj => obj[0]))
 	}
 
+	public getPkName(table: string): Observable<{ [index: string]: string }> {
+		return this.http.get<{ [index: string]: string }[]>(`${this.apiurl}/${table}/pk`).pipe(map(obj => obj[0]))
+	}
+
 }

@@ -1,12 +1,20 @@
 <h1>Details Page</h1>
-<div *ngIf="tableLoaded;">
+<div>
 	<table>
 		<thead>
-			<th *ngFor="let header of tableHeaders">{{header}}</th>
+			<th *ngFor="let header of ">{{header}}</th>
 		</thead>
 		<tbody>
-			<tr *ngFor="let row of tableData">
-				<td *ngFor="let col of tableHeaders">{{row[col]}}</td>
+			<tr>
+				<td *ngFor="let col of table_headers">
+					<ng-container *ngIf="col === 'au_id'; then is_pkey else not_pkey"></ng-container>
+					<ng-template #is_pkey>
+						{{record[col]}}
+					</ng-template>
+					<ng-template #not_pkey>
+						<input type='text' value={{record[col]}}>
+					</ng-template>
+				</td>
 			</tr>
 		</tbody>
 	</table>
