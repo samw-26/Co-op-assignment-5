@@ -4,12 +4,13 @@ import { TableService } from '../table/table.service';
 import { Schema } from '../interfaces';
 import { forkJoin } from 'rxjs';
 import {MatButtonModule} from '@angular/material/button';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-details',
-  imports: [CommonModule, MatButtonModule],
+  imports: [CommonModule, MatButtonModule, RouterLink],
   templateUrl: './details.component.html',
-  styleUrl: './details.component.css'
+  styleUrl: './details.component.scss'
 })
 export class DetailsComponent {
 	@Input() id!: string;

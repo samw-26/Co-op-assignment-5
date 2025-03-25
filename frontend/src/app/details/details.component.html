@@ -2,7 +2,7 @@
 <div>
 	<table>
 		<thead>
-			<th *ngFor="let header of ">{{header}}</th>
+			<th *ngFor="let header of tableHeaders">{{header}}</th>
 		</thead>
 		<tbody>
 			<tr>
@@ -19,4 +19,8 @@
 		</tbody>
 	</table>
 </div>
-<button mat-button>Update</button>
+<footer>
+	<button mat-button>Cancel</button>
+	<button mat-button>Update</button>
+	<button mat-button>Delete</button>
+</footer>
