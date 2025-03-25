@@ -3,12 +3,13 @@ import { CommonModule} from '@angular/common';
 import { TableService } from './table.service';
 import { RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
 	selector: 'app-table',
-	imports: [CommonModule, RouterLink],
+	imports: [CommonModule, RouterLink, MatButtonModule],
 	templateUrl: './table.component.html',
-	styleUrl: './table.component.css'
+	styleUrl: './table.component.scss'
 })
 export class TableComponent {
 	tableName: string = 'authors';

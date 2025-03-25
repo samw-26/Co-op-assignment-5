@@ -1,8 +1,11 @@
 button[mat-button] {
-	font-size: 1.2em;
-	margin-top: 15px;
 	margin-right: 0.8em;
 }
+
+button[mat-button].del-btn {
+	color: red;
+}
+
 footer {
 	display: flex;
 	flex-wrap: wrap;

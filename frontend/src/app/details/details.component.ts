@@ -1,10 +1,12 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewContainerRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableService } from '../table/table.service';
 import { Schema } from '../interfaces';
 import { forkJoin } from 'rxjs';
 import {MatButtonModule} from '@angular/material/button';
 import { RouterLink } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { DeleteDialog } from './delete.dialog.component';
 
 @Component({
   selector: 'app-details',
@@ -20,7 +22,7 @@ export class DetailsComponent {
 	tableSchema!: Schema[]
 	tablePKey!: string;
 
-	constructor(private tblservice: TableService) {}
+	constructor(private tblservice: TableService, private dialog: MatDialog) {}
 
 	ngOnInit(): void {
 		forkJoin({
@@ -32,6 +34,12 @@ export class DetailsComponent {
 			this.tableHeaders = Object.keys(record);
 			this.tablePKey = pkey.COLUMN_NAME;
 			this.tableSchema = schema;
+		});
+	}
+
+	onDelete(): void {
+		const dialogRef = this.dialog.open(DeleteDialog, {
+			data: {id: this.record[this.tablePKey]}
 		});
 	}
 }

@@ -15,3 +15,9 @@ input {
 	width:8em;
 	text-align: center;
 }
+
+button[mat-button], button[mat-raised-button]  {
+	margin-top: 15px;
+	font-size: 1.2em;
+}
+
