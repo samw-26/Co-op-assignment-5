@@ -1,12 +1,12 @@
 <h2 mat-dialog-title>Are you sure you want to delete this record? Action cannot be reversed.</h2>
-<form>
+<form #confirmationForm="ngForm">
 	<mat-form-field>
-		<mat-label>Enter record id({{id}}) to confirm:</mat-label>
-		<input matInput type="text" [(ngModel)] = "confirmValue" [ngModelOptions]="{standalone: true}" (input) = "onInput()" required>
+		<mat-label>Enter record id ({{id}}) to confirm:</mat-label>
+		<input matInput type="text" [(ngModel)] = "confirmValue" name="confirmValue" pattern={{id}} required>
 		<mat-error>Text does not match record id.</mat-error>
 	</mat-form-field>
 	<mat-dialog-actions>
 		<button mat-button (click)="onCancel()">Cancel</button>
-		<button mat-button [disabled]="disabled" (click)="onConfirm()">Confirm</button>
+		<button mat-button [disabled]="!confirmationForm.valid" (click)="onConfirm()">Confirm</button>
 	</mat-dialog-actions>
 </form>

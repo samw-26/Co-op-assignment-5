@@ -1,6 +1,8 @@
 import sql from "msnodesqlv8";
 import express from "express"
+import {ParamsDictionary} from 'express-serve-static-core'
 import cors from "cors"
+import SqlString from 'tsqlstring';
 
 const app = express();
 const port = 5000;
@@ -18,6 +20,7 @@ function queryDb(req: express.Request, res: express.Response, connErr: MsNodeSql
 		res.status(500).send("Could not open connection to SQL Server");
 		return;
 	}
+
 	conn.query(queryStr, (queryErr?: MsNodeSqlV8.Error, result?: { [index: string]: string }[]) => {
 		if (queryErr) {
 			console.log(queryErr);
@@ -67,11 +70,17 @@ app.get('/api/:table/:id?', async (req: express.Request, res: express.Response) 
 	let queryStr: string = "";
 	if (req.params.id) {
 		let idName: string = await fetch("http://localhost:5000/api/authors/pk").then(response => response.json().then(pk => idName = pk[0]['COLUMN_NAME']));
-		queryStr = `SELECT * FROM ${req.params.table} WHERE ${idName}='${req.params.id}'`;
+		console.log(queryStr)
+		queryStr = SqlString.format("SELECT * FROM ?? WHERE au_id=?", [req.params.table, req.params.id]);
+		console.log(queryStr)
 	} else {
 		queryStr = `SELECT * FROM ${req.params.table}`;
 	}
 	sqlOpenWrapper(req, res, queryStr);
+});
+
+app.put('/api/:table/:pk/:id', (req: express.Request, res: express.Response) => {
+	let queryStr = `DELETE FROM ${req.params.table} WHERE ${req.params.pk} = ${req.params.id}`
 });
 
 

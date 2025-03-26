@@ -41,5 +41,11 @@ export class DetailsComponent {
 		const dialogRef = this.dialog.open(DeleteDialog, {
 			data: {id: this.record[this.tablePKey]}
 		});
+		dialogRef.afterClosed().subscribe(result => {
+			if (result) {
+				console.log("Deleting...")
+				//this.tblservice.
+			}
+		});
 	}
 }

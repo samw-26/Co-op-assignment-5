@@ -1,9 +1,9 @@
-import { Component, inject, Inject } from '@angular/core';
+import { Component, inject, Inject, viewChild } from '@angular/core';
 import {MatDialogModule, MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
-import { FormControl, FormsModule } from '@angular/forms';
+import { AbstractControl, FormControl, FormsModule, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -18,28 +18,29 @@ import { CommonModule } from '@angular/common';
 export class DeleteDialog {
 	readonly id: string = inject<{id: string}>(MAT_DIALOG_DATA)["id"];
 	readonly dialogRef = inject(MatDialogRef<DeleteDialog>);
+	readonly confirmationForm = viewChild<FormControl>('confirmationForm');
 	confirmValue: string = "";
-	disabled: boolean = true;
 
 	onCancel(): void {
 		this.dialogRef.close()
 	}
 
 	onInput(): void {
-		if (this.isMatch()) {
-			this.disabled = false;
+		console.log("input");
+	}
+
+	isMisMatch(): boolean {
+		return this.confirmValue !== this.id;
+	}
+	onConfirm(): void {
+		const confirmationForm = this.confirmationForm();
+  if (confirmationForm && confirmationForm.valid) {
+			console.log(`Confirmed ${this.confirmValue}`);
+			this.dialogRef.close(true)
 		}
 		else {
-			this.disabled = true;
+			console.log("Not confirmed");
 		}
-	}
-
-	isMatch(): boolean {
-		return this.confirmValue === this.id
-	}
-
-	onConfirm(): void {
-		console.log("confirmed", this.confirmValue);
 	}
 }
 

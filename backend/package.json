@@ -15,12 +15,16 @@
     "express": "^4.21.2",
     "msnodesqlv8": "^4.5.0",
     "mssql": "^11.0.1",
+    "sqlstring": "^2.3.3",
+    "tsqlstring": "^1.0.1",
     "typescript": "^5.8.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/mssql": "^9.1.7",
+    "@types/sqlstring": "^2.3.2",
+    "@types/tsqlstring": "^1.0.2",
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2"
   }
