@@ -15,10 +15,9 @@ export class TableService {
 		return this.http.get<{ [index: string]: string }[]>(`${this.apiurl}/${table}`);
 	}
 
-	getRecord(table: string, id: string): Observable<HttpResponse<{ [index: string]: string }[]>> {
-		//.pipe(map(obj => obj[0]))
+	getRecord(table: string, id: string): Observable<{ [index: string]: string } | null> {
 		return this.http.get<{ [index: string]: string }[]>(`${this.apiurl}/${table}/${id}`, {observe: "response"})
-		// .pipe(map((res: HttpResponse<{[index: string]: string}[]>) => res.body ? res.body[0] : null))
+		.pipe(map((res: HttpResponse<{ [index: string]: string }[]>) => res.body ? res.body[0] : null))
 	}
 
 	getPkName(table: string): Observable<PrimaryKey> {

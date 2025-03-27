@@ -8,10 +8,11 @@ import { Router, RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteDialog } from './delete.dialog.component';
 import { pageNotFound } from '../app.routes';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-details',
-  imports: [CommonModule, MatButtonModule, RouterLink],
+  imports: [CommonModule, MatButtonModule, RouterLink, FormsModule],
   templateUrl: './details.component.html',
   styleUrl: './details.component.scss'
 })
@@ -32,8 +33,8 @@ export class DetailsComponent {
 			schema: this.tblservice.getSchema(this.tableName)
 		  }).subscribe({
 			next: ({ record, pkey, schema }) => {
-				if (record.body) {
-					this.record = record.body[0];
+				if (record) {
+					this.record = record;
 					this.tableHeaders = Object.keys(this.record);
 					this.tablePKey = pkey.COLUMN_NAME;
 					this.tableSchema = schema;
@@ -44,6 +45,10 @@ export class DetailsComponent {
 			}
 		  }
 		);
+	}
+
+	onUpdate(): void {
+
 	}
 
 	onDelete(): void {

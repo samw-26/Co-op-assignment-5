@@ -1,26 +1,28 @@
 <h1>Details Page</h1>
-<div>
-	<table>
-		<thead>
-			<th *ngFor="let header of tableHeaders">{{header}}</th>
-		</thead>
-		<tbody>
-			<tr>
-				<td *ngFor="let col of tableHeaders">
-					<ng-container *ngIf="col === 'au_id'; then is_pkey else not_pkey"></ng-container>
-					<ng-template #is_pkey>
-						{{record[col]}}
-					</ng-template>
-					<ng-template #not_pkey>
-						<input type='text' value={{record[col]}}>
-					</ng-template>
-				</td>
-			</tr>
-		</tbody>
-	</table>
-</div>
-<footer>
-	<button mat-button routerLink="/">Cancel</button>
-	<button mat-button>Update</button>
-	<button mat-button class="del-btn" (click)="onDelete()">Delete</button>
-</footer>
+<form #detailsForm="ngForm">
+	<div>
+		<table>
+			<thead>
+				<th *ngFor="let header of tableHeaders">{{header}}</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td *ngFor="let col of tableHeaders">
+						<ng-container *ngIf="col === 'au_id'; then is_pkey else not_pkey"></ng-container>
+						<ng-template #is_pkey>
+							{{record[col]}}
+						</ng-template>
+						<ng-template #not_pkey>
+							<input type='text' [(ngModel)]="record[col]" name={{col}}>
+						</ng-template>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<footer>
+		<button mat-button routerLink="/">Cancel</button>
+		<button mat-button (click)="onUpdate()">Update</button>
+		<button mat-button class="del-btn" (click)="onDelete()">Delete</button>
+	</footer>
+</form>
