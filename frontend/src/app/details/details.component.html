@@ -13,7 +13,7 @@
 							{{record[col]}}
 						</ng-template>
 						<ng-template #not_pkey>
-							<input type='text' [(ngModel)]="record[col]" name={{col}}>
+							<input type='text' [(ngModel)]="record[col]" name={{col}} [maxLength]="getColMaxLength(col)" [required]="isRequired(col)">
 						</ng-template>
 					</td>
 				</tr>

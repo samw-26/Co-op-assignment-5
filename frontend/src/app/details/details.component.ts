@@ -38,6 +38,7 @@ export class DetailsComponent {
 					this.tableHeaders = Object.keys(this.record);
 					this.tablePKey = pkey.COLUMN_NAME;
 					this.tableSchema = schema;
+					console.log(this.tableSchema)
 				}
 			},
 			error: (e) => {
@@ -63,4 +64,21 @@ export class DetailsComponent {
 			}
 		});
 	}
+
+	private getColumnSchema(column: string) {
+		return this.tableSchema.find(e => e["COLUMN_NAME"] === column);
+	}
+
+	protected getColMaxLength(column: string) {
+		return this.tableSchema.find(e => e["COLUMN_NAME"] === column)?.CHARACTER_MAXIMUM_LENGTH
+	}
+
+	protected isRequired(column: string) {
+		let schema = this.getColumnSchema(column);
+		if (schema) {
+			return schema.IS_NULLABLE === "NO" ? true : false;
+		}
+		return false;
+	}
+	
 }
