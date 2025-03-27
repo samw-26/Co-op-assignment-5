@@ -25,21 +25,10 @@ export class DeleteDialog {
 		this.dialogRef.close()
 	}
 
-	onInput(): void {
-		console.log("input");
-	}
-
-	isMisMatch(): boolean {
-		return this.confirmValue !== this.id;
-	}
 	onConfirm(): void {
 		const confirmationForm = this.confirmationForm();
-  if (confirmationForm && confirmationForm.valid) {
-			console.log(`Confirmed ${this.confirmValue}`);
+		if (confirmationForm && confirmationForm.valid) {
 			this.dialogRef.close(true)
-		}
-		else {
-			console.log("Not confirmed");
 		}
 	}
 }

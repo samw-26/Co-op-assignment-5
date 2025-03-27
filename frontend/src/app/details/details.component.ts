@@ -4,9 +4,10 @@ import { TableService } from '../table/table.service';
 import { Schema } from '../interfaces';
 import { forkJoin } from 'rxjs';
 import {MatButtonModule} from '@angular/material/button';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteDialog } from './delete.dialog.component';
+import { pageNotFound } from '../app.routes';
 
 @Component({
   selector: 'app-details',
@@ -22,19 +23,27 @@ export class DetailsComponent {
 	tableSchema!: Schema[]
 	tablePKey!: string;
 
-	constructor(private tblservice: TableService, private dialog: MatDialog) {}
+	constructor(private tblservice: TableService, private dialog: MatDialog, private router: Router) {}
 
 	ngOnInit(): void {
 		forkJoin({
 			record: this.tblservice.getRecord(this.tableName, this.id),
 			pkey: this.tblservice.getPkName(this.tableName),
 			schema: this.tblservice.getSchema(this.tableName)
-		  }).subscribe(({ record, pkey, schema }) => {
-			this.record = record;
-			this.tableHeaders = Object.keys(record);
-			this.tablePKey = pkey.COLUMN_NAME;
-			this.tableSchema = schema;
-		});
+		  }).subscribe({
+			next: ({ record, pkey, schema }) => {
+				if (record.body) {
+					this.record = record.body[0];
+					this.tableHeaders = Object.keys(this.record);
+					this.tablePKey = pkey.COLUMN_NAME;
+					this.tableSchema = schema;
+				}
+			},
+			error: (e) => {
+				this.router.navigateByUrl(pageNotFound)
+			}
+		  }
+		);
 	}
 
 	onDelete(): void {
@@ -43,8 +52,9 @@ export class DetailsComponent {
 		});
 		dialogRef.afterClosed().subscribe(result => {
 			if (result) {
-				console.log("Deleting...")
-				//this.tblservice.
+				this.tblservice.deleteRecord(this.tableName, this.id).subscribe(()=>{
+					this.router.navigateByUrl("/");
+				});
 			}
 		});
 	}

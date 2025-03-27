@@ -2,7 +2,7 @@
 <form #confirmationForm="ngForm">
 	<mat-form-field>
 		<mat-label>Enter record id ({{id}}) to confirm:</mat-label>
-		<input matInput type="text" [(ngModel)] = "confirmValue" name="confirmValue" pattern={{id}} required>
+		<input matInput type="text" [(ngModel)]="confirmValue" name="confirmValue" pattern={{id}} required>
 		<mat-error>Text does not match record id.</mat-error>
 	</mat-form-field>
 	<mat-dialog-actions>

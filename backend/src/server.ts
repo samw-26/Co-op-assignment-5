@@ -21,7 +21,7 @@ function queryDb(req: express.Request, res: express.Response, connErr: MsNodeSql
 		return;
 	}
 
-	conn.query(queryStr, (queryErr?: MsNodeSqlV8.Error, result?: { [index: string]: string }[]) => {
+	conn.query(queryStr, (queryErr?: MsNodeSqlV8.Error, result?: MsNodeSqlV8.sqlRecordType[]) => {
 		if (queryErr) {
 			console.log(queryErr);
 			res.status(500).send("Error executing query.");

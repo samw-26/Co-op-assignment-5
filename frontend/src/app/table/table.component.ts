@@ -4,6 +4,7 @@ import { TableService } from './table.service';
 import { RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
+import { routes } from '../app.routes';
 
 @Component({
 	selector: 'app-table',
@@ -16,7 +17,7 @@ export class TableComponent {
 	tableRows!: { [index: string]: string }[];
 	tableHeaders!: string[];
 	tablePKey!: string;
-
+	
 	constructor(private tblservice: TableService) {}
 
 	ngOnInit(): void {
