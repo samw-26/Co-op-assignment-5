@@ -3,7 +3,7 @@ import {MatDialogModule, MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
-import { AbstractControl, FormControl, FormsModule, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { AbstractControl, FormControl, FormsModule, NgForm, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -18,7 +18,7 @@ import { CommonModule } from '@angular/common';
 export class DeleteDialog {
 	readonly id: string = inject<{id: string}>(MAT_DIALOG_DATA)["id"];
 	readonly dialogRef = inject(MatDialogRef<DeleteDialog>);
-	readonly confirmationForm = viewChild<FormControl>('confirmationForm');
+	readonly confirmationForm = viewChild.required<NgForm>('confirmationForm');
 	confirmValue: string = "";
 
 	onCancel(): void {
@@ -26,8 +26,7 @@ export class DeleteDialog {
 	}
 
 	onConfirm(): void {
-		const confirmationForm = this.confirmationForm();
-		if (confirmationForm && confirmationForm.valid) {
+		if (this.confirmationForm().valid) {
 			this.dialogRef.close(true)
 		}
 	}

@@ -10,7 +10,7 @@
 					<td *ngFor="let col of tableHeaders">
 						<ng-container *ngIf="col === 'au_id'; then is_pkey else not_pkey"></ng-container>
 						<ng-template #is_pkey>
-							{{record[col]}}
+							<input type="text" value={{record[col]}} disabled>
 						</ng-template>
 						<ng-template #not_pkey>
 							<input type='text' [(ngModel)]="record[col]" name={{col}} 

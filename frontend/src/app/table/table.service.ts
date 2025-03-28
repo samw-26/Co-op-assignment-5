@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import { CheckConstraint, PrimaryKey, Schema } from '../interfaces';
+import { CheckConstraint, PrimaryKey, Schema, ServerResponse } from '../interfaces';
 
 @Injectable({
 	providedIn: 'root'
@@ -37,7 +37,12 @@ export class TableService {
 	}
 
 
-	deleteRecord(table: string, id: string): Observable<Object> {
-		return this.http.delete(`${this.apiurl}/${table}/${id}`, {responseType: "text"});
+	updateRecord(table: string, id: string, data: { [index: string]: string }): Observable<ServerResponse> {
+		return this.http.put<ServerResponse>(`${this.apiurl}/${table}/${id}`, data);
+	}
+
+
+	deleteRecord(table: string, id: string): Observable<ServerResponse> {
+		return this.http.delete<ServerResponse>(`${this.apiurl}/${table}/${id}`);
 	}
 }

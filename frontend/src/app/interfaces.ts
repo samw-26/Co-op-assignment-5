@@ -13,6 +13,12 @@ export interface CheckConstraint {
 	definition: string
 }
 
+
 export interface PrimaryKey {
 	COLUMN_NAME: string
+}
+
+
+export interface ServerResponse {
+	message: string
 }

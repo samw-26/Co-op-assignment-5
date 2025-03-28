@@ -9,6 +9,7 @@ const port = 5000;
 const config: string = "server=ON44C03490451\\MSSQLSERVER01;Database=pubs;Trusted_Connection=true;Driver={SQL Server}"
 
 app.use(cors());
+app.use(express.json());
 app.listen(port, () => {
 	console.log("Website served on http://localhost:" + port);
 });
@@ -17,24 +18,24 @@ app.listen(port, () => {
 function queryDb(req: express.Request, res: express.Response, connErr: MsNodeSqlV8.Error, conn: MsNodeSqlV8.Connection, queryStr: string) {
 	if (connErr) {
 		console.log(connErr);
-		res.status(500).send("Could not open connection to SQL Server.");
+		res.status(500).send({message:"Could not open connection to SQL Server."});
 		return;
 	}
 
-	conn.query(queryStr, (queryErr?: MsNodeSqlV8.Error, result?: MsNodeSqlV8.sqlRecordType[]) => {
+	conn.query(queryStr, (queryErr?: MsNodeSqlV8.Error, result?: MsNodeSqlV8.sqlRecordType[], more?: boolean) => {
 		if (queryErr) {
 			console.log(queryErr);
-			res.status(500).send("Error executing query.");
+			res.status(500).send({message:"Error executing query."});
 		} 
 		else {
 			if (req.method === "GET" && result!.length > 0) {
 				res.send(result);
 			} 
 			else if (req.method !== "GET"){
-				res.send("Query executed.");
+				res.send({message:"Query executed."});
 			}
 			else {
-				res.status(404).send("No results found from query.");
+				res.status(404).send({message:"No results found from query."});
 			}
 		}
 	});
@@ -51,6 +52,7 @@ function sqlQueryWrapper(req: express.Request, res: express.Response, queryStr: 
 
 async function getPrimaryKey(table: string) {
 	const response = await fetch(`http://localhost:5000/api/${table}/pk`);
+	if (response.status !== 200) {return null}
 	const pk = await response.json();
 	return pk[0]['COLUMN_NAME'];
 }
@@ -101,10 +103,20 @@ app.get("/api/:table/:id?", async (req: express.Request, res: express.Response) 
 	let queryStr: string = "";
 	if (req.params.id) {
 		let idName: string = await getPrimaryKey(req.params.table);
-		queryStr = SqlString.format("SELECT * FROM ?? WHERE ??=?", [req.params.table, idName, req.params.id]);
+		queryStr = SqlString.format("SELECT * FROM ?? WHERE ?? = ?", [req.params.table, idName, req.params.id]);
 	} else {
 		queryStr = SqlString.format("SELECT * FROM ??", [req.params.table]);
 	}
+	sqlQueryWrapper(req, res, queryStr);
+});
+
+
+/**
+ * Route for updating record
+ */
+app.put("/api/:table/:id", async (req: express.Request, res: express.Response) => {
+	let idName: string = await getPrimaryKey(req.params.table);
+	let queryStr = SqlString.format("UPDATE ?? SET ? WHERE ?? = ?", [req.params.table, req.body, idName, req.body[idName]]);
 	sqlQueryWrapper(req, res, queryStr);
 });
 
