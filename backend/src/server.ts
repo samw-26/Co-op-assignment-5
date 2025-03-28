@@ -48,6 +48,7 @@ function sqlQueryWrapper(req: express.Request, res: express.Response, queryStr: 
 	});
 }
 
+
 async function getPrimaryKey(table: string) {
 	const response = await fetch(`http://localhost:5000/api/${table}/pk`);
 	const pk = await response.json();
@@ -55,13 +56,19 @@ async function getPrimaryKey(table: string) {
 }
 
 
-app.get('/api/:table/pk', (req: express.Request, res: express.Response) => {
+/**
+ * Route for getting primary key of table.
+ */
+app.get("/api/:table/pk", (req: express.Request, res: express.Response) => {
 	let queryStr = SqlString.format("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_NAME = ?", [req.params.table]);
 	sqlQueryWrapper(req, res, queryStr);
 });
 
 
-app.get('/api/:table/schema', (req: express.Request, res: express.Response) => {
+/**
+ * Route for getting table schema.
+ */
+app.get("/api/:table/schema", (req: express.Request, res: express.Response) => {
 	let queryStr = SqlString.format(`
 		SELECT 
 			COLUMN_NAME, 
@@ -77,7 +84,20 @@ app.get('/api/:table/schema', (req: express.Request, res: express.Response) => {
 });
 
 
-app.get('/api/:table/:id?', async (req: express.Request, res: express.Response) => {
+/**
+ * Route for getting table check constraints.
+ * Check constraint in format: CK__<table name>__<column name>...
+ */
+app.get("/api/:table/ck", (req: express.Request, res: express.Response) => {
+	let queryStr = SqlString.format("SELECT name, definition FROM sys.check_constraints WHERE name LIKE ?", ["%" + req.params.table + "%"]);
+	sqlQueryWrapper(req, res, queryStr);
+});
+
+
+/**
+ * Route for getting entire table or record.
+ */
+app.get("/api/:table/:id?", async (req: express.Request, res: express.Response) => {
 	let queryStr: string = "";
 	if (req.params.id) {
 		let idName: string = await getPrimaryKey(req.params.table);
@@ -88,7 +108,11 @@ app.get('/api/:table/:id?', async (req: express.Request, res: express.Response) 
 	sqlQueryWrapper(req, res, queryStr);
 });
 
-app.delete('/api/:table/:id', async (req: express.Request, res: express.Response) => {
+
+/**
+ * Route for deleting record.
+ */
+app.delete("/api/:table/:id", async (req: express.Request, res: express.Response) => {
 	let idName =  await getPrimaryKey(req.params.table);
 	let queryStr = SqlString.format("DELETE FROM ?? WHERE ?? = ?", [req.params.table, idName, req.params.id]);
 	sqlQueryWrapper(req, res, queryStr);

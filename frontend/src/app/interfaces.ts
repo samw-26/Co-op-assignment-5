@@ -7,6 +7,12 @@ export interface Schema {
     NUMERIC_SCALE: number
 }
 
+
+export interface CheckConstraint {
+	name: string,
+	definition: string
+}
+
 export interface PrimaryKey {
 	COLUMN_NAME: string
 }

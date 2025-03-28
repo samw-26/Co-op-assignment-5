@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { TableComponent } from './table/table.component';
 import { DetailsComponent } from './details/details.component';
-import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { PageNotFoundComponent } from './page-not-found/page.not.found.component';
 
 export const pageNotFound = "error/404"
 export const routes: Routes = [

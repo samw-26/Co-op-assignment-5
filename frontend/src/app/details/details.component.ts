@@ -1,7 +1,7 @@
 import { Component, Input, ViewContainerRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableService } from '../table/table.service';
-import { Schema } from '../interfaces';
+import { CheckConstraint, Schema } from '../interfaces';
 import { forkJoin } from 'rxjs';
 import {MatButtonModule} from '@angular/material/button';
 import { Router, RouterLink } from '@angular/router';
@@ -21,7 +21,8 @@ export class DetailsComponent {
 	tableName: string = 'authors';
 	tableHeaders!: string[];
 	record!: { [index: string]: string};
-	tableSchema!: Schema[]
+	tableSchema!: Schema[];
+	checkConstraints!: CheckConstraint[];
 	tablePKey!: string;
 
 	constructor(private tblservice: TableService, private dialog: MatDialog, private router: Router) {}
@@ -30,27 +31,34 @@ export class DetailsComponent {
 		forkJoin({
 			record: this.tblservice.getRecord(this.tableName, this.id),
 			pkey: this.tblservice.getPkName(this.tableName),
-			schema: this.tblservice.getSchema(this.tableName)
+			schema: this.tblservice.getSchema(this.tableName),
+			checkConstraints: this.tblservice.getCheckConstraints(this.tableName)
 		  }).subscribe({
-			next: ({ record, pkey, schema }) => {
+			next: ({ record, pkey, schema, checkConstraints }) => {
 				if (record) {
 					this.record = record;
 					this.tableHeaders = Object.keys(this.record);
 					this.tablePKey = pkey.COLUMN_NAME;
 					this.tableSchema = schema;
+					this.checkConstraints = checkConstraints;
+					console.log(this.checkConstraints)
 					console.log(this.tableSchema)
+				} else {
+					this.router.navigateByUrl(pageNotFound);
 				}
 			},
 			error: (e) => {
-				this.router.navigateByUrl(pageNotFound)
+				this.router.navigateByUrl(pageNotFound);
 			}
 		  }
 		);
 	}
 
-	onUpdate(): void {
 
+	onUpdate(): void {
+		console.log("update placeholder");
 	}
+
 
 	onDelete(): void {
 		const dialogRef = this.dialog.open(DeleteDialog, {
@@ -65,20 +73,36 @@ export class DetailsComponent {
 		});
 	}
 
-	private getColumnSchema(column: string) {
+
+	private getColumnSchema(column: string): Schema | undefined {
 		return this.tableSchema.find(e => e["COLUMN_NAME"] === column);
 	}
 
-	protected getColMaxLength(column: string) {
-		return this.tableSchema.find(e => e["COLUMN_NAME"] === column)?.CHARACTER_MAXIMUM_LENGTH
+
+	protected getColMaxLength(column: string): number | null {
+		const schema = this.getColumnSchema(column);
+		return schema?.CHARACTER_MAXIMUM_LENGTH ?? null;
 	}
 
-	protected isRequired(column: string) {
-		let schema = this.getColumnSchema(column);
-		if (schema) {
-			return schema.IS_NULLABLE === "NO" ? true : false;
-		}
-		return false;
+
+	protected getColMinLength(column: string) {
+		const schema = this.getColumnSchema(column)
+		return schema?.DATA_TYPE === 'char' ? schema.CHARACTER_MAXIMUM_LENGTH : null;
 	}
-	
+
+
+	protected isRequired(column: string) {
+		const schema = this.getColumnSchema(column);
+		return schema?.IS_NULLABLE === "NO";
+	}
+
+
+	protected getPattern(column: string) {
+		if (this.getColumnSchema(column)?.DATA_TYPE === "bit") {
+			return "true|false"
+		}
+		const constraint = this.checkConstraints.find(e => e.name.includes(column))
+		const pattern = constraint?.definition.match(/(?<=').+(?=')/);
+		return pattern ? pattern[0] : "";
+	}
 }
