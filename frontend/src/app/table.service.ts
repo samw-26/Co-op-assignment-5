@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import { CheckConstraint, PrimaryKey, Schema, ServerResponse } from '../interfaces';
+import { CheckConstraint, PrimaryKey, Schema, ServerResponse } from './interfaces';
 
 @Injectable({
 	providedIn: 'root'

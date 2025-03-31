@@ -1,0 +1,25 @@
+<h1>Insert new record</h1>
+<form #insertForm="ngForm">
+	<div>
+		<table>
+			<thead>
+				<th *ngFor="let header of tableHeaders">{{header}}</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td *ngFor="let col of tableHeaders">
+						<input type='text' [(ngModel)]="record[col]" name={{col}}
+							[minlength]="validators.getColMinLength(col)"
+							[maxlength]="validators.getColMaxLength(col)"
+							[required]="validators.isRequired(col)"
+							[pattern]="validators.getPattern(col)">
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<footer>
+		<button mat-button routerLink="">Cancel</button>
+		<button mat-button (click)="onInsert()" [disabled]="!insertForm.valid">Insert</button>
+	</footer>
+</form>

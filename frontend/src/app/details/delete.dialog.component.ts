@@ -20,7 +20,6 @@ export class DeleteDialog {
 	readonly dialogRef = inject(MatDialogRef<DeleteDialog>);
 	readonly confirmationForm = viewChild.required<NgForm>('confirmationForm');
 	confirmValue: string = "";
-
 	onCancel(): void {
 		this.dialogRef.close()
 	}

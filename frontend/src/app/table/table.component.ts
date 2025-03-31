@@ -1,10 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule} from '@angular/common';
-import { TableService } from './table.service';
+import { TableService } from '../table.service';
 import { RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { routes } from '../app.routes';
+
+export const tableName: string = "authors";
 
 @Component({
 	selector: 'app-table',
@@ -13,17 +15,16 @@ import { routes } from '../app.routes';
 	styleUrl: './table.component.scss'
 })
 export class TableComponent {
-	tableName: string = 'authors';
 	tableRows!: { [index: string]: string }[];
 	tableHeaders!: string[];
 	tablePKey!: string;
-	
+	tableName: string = tableName;
 	constructor(private tblservice: TableService) {}
 
 	ngOnInit(): void {
 		forkJoin({
-			rows: this.tblservice.fetchTable(this.tableName),
-			pkey: this.tblservice.getPkName(this.tableName)
+			rows: this.tblservice.fetchTable(tableName),
+			pkey: this.tblservice.getPkName(tableName)
 		}).subscribe(({rows, pkey}) => {
 			this.tableHeaders = Object.keys(rows[0]);
 			this.tableRows = rows;
@@ -31,3 +32,4 @@ export class TableComponent {
 		});
 	}
 }
+

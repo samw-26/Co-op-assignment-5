@@ -13,11 +13,11 @@
 							<input type="text" value={{record[col]}} disabled>
 						</ng-template>
 						<ng-template #not_pkey>
-							<input type='text' [(ngModel)]="record[col]" name={{col}} 
-								[minlength]="getColMinLength(col)" 
-								[maxlength]="getColMaxLength(col)" 
-								[required]="isRequired(col)"
-								[pattern]="getPattern(col)">
+								<input type='text' [(ngModel)]="record[col]" name={{col}} 
+									[minlength]="validators.getColMinLength(col)" 
+									[maxlength]="validators.getColMaxLength(col)" 
+									[required]="validators.isRequired(col)"
+									[pattern]="validators.getPattern(col)">
 						</ng-template>
 					</td>
 				</tr>
@@ -25,7 +25,7 @@
 		</table>
 	</div>
 	<footer>
-		<button mat-button routerLink="/">Cancel</button>
+		<button mat-button routerLink="">Cancel</button>
 		<button mat-button (click)="onUpdate()" [disabled]="!detailsForm.valid">Update</button>
 		<button mat-button class="del-btn" (click)="onDelete()">Delete</button>
 	</footer>
