@@ -1,8 +1,9 @@
-import sql from "msnodesqlv8";
-import express from "express"
+import sql from 'msnodesqlv8';
+import express from 'express'
 import {ParamsDictionary} from 'express-serve-static-core'
-import cors from "cors"
+import cors from 'cors'
 import SqlString from 'tsqlstring';
+import {ServerResponse} from '@frontend/app/interfaces'
 
 const app = express();
 const port = 5000;
@@ -17,15 +18,21 @@ app.listen(port, () => {
 
 function queryDb(req: express.Request, res: express.Response, connErr: MsNodeSqlV8.Error, conn: MsNodeSqlV8.Connection, queryStr: string) {
 	if (connErr) {
-		console.log(connErr);
-		res.status(500).send({message:"Could not open connection to SQL Server."});
+		let resMsg: ServerResponse = {
+			errorCode: connErr?.code,
+			message: connErr?.message
+		}
+		res.status(500).send(resMsg);
 		return;
 	}
 
 	conn.query(queryStr, (queryErr?: MsNodeSqlV8.Error, result?: MsNodeSqlV8.sqlRecordType[], more?: boolean) => {
 		if (queryErr) {
-			console.log(queryErr);
-			res.status(500).send({message:"Error executing query."});
+			let resMsg: ServerResponse = {
+				errorCode: queryErr?.code,
+				message: queryErr?.message
+			}
+			res.status(500).send(resMsg);
 		} 
 		else {
 			if (req.method === "GET" && result!.length > 0) {

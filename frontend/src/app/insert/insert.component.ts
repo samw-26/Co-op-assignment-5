@@ -64,8 +64,9 @@ export class InsertComponent {
 	onInsert(): void {
 		if (this.insertForm().valid) {
 			this.validators.correctDataTypes(this.record);
-			this.tblservice.insertRecord(tableName, this.record).subscribe(() => {
-				this.router.navigateByUrl("")
+			this.tblservice.insertRecord(tableName, this.record).subscribe({
+				next: () => this.router.navigateByUrl(""),
+				error: e => console.log(e.error)
 			});
 		}
 	}

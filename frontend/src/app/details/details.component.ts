@@ -51,9 +51,7 @@ export class DetailsComponent {
 					this.router.navigateByUrl(pageNotFound);
 				}
 			},
-			error: (e) => {
-				this.router.navigateByUrl(pageNotFound);
-			}
+			error: e => this.router.navigateByUrl(pageNotFound)
 		}
 		);
 	}

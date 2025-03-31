@@ -32,5 +32,6 @@ export interface PrimaryKey {
 
 
 export interface ServerResponse {
+	errorCode: number | undefined,
 	message: string
 }
