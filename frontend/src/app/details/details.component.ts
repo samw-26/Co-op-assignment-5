@@ -29,7 +29,7 @@ export class DetailsComponent {
 	detailsForm = viewChild.required<NgForm>("detailsForm");
 	validators!: Validation;
 
-	constructor(private tblservice: TableService, private dialog: MatDialog, private router: Router) { }
+	constructor(private tblservice: TableService, private dialog: MatDialog, private router: Router) {}
 
 	ngOnInit(): void {
 		forkJoin({

@@ -7,13 +7,13 @@ import { tableName } from '../table/table.component';
 import { CheckConstraint, Schema } from '../interfaces';
 import { Router, RouterLink } from '@angular/router';
 import { pageNotFound } from '../app.routes';
-import { Validation } from '../validation';
+import { Validation, CustomValidatorDirective } from '../validation';
 import { MatButtonModule } from '@angular/material/button';
 
 
 @Component({
   selector: 'app-insert',
-  imports: [FormsModule, CommonModule, MatButtonModule, RouterLink],
+  imports: [FormsModule, CommonModule, MatButtonModule, RouterLink, CustomValidatorDirective],
   templateUrl: './insert.component.html',
   styleUrl: './insert.component.scss'
 })
@@ -26,6 +26,7 @@ export class InsertComponent {
 	tablePKey!: string;
 	insertForm = viewChild.required<NgForm>("insertForm");
 	validators!: Validation;
+	isDuplicate: boolean = false;
 	
 	constructor(private tblservice: TableService, private router: Router) {}
 	ngOnInit(): void {
@@ -47,7 +48,7 @@ export class InsertComponent {
 					this.tablePKey = pkey.COLUMN_NAME;
 					this.tableSchema = schema;
 					this.checkConstraints = checkConstraints;
-					this.validators = new Validation(this.tableSchema, this.checkConstraints);
+					this.validators = new Validation(this.tableSchema, this.checkConstraints, {records: records, pkey: this.tablePKey});
 				}
 				else {
 					this.router.navigateByUrl(pageNotFound);
