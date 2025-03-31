@@ -92,9 +92,10 @@ export class Validation {
 	providers: [{ provide: NG_VALIDATORS, useExisting: CustomValidatorDirective, multi: true }]
 })
 export class CustomValidatorDirective implements Validator {
-	@Input({ alias: 'customValidator', required: true }) validators!: Validation;
+	@Input({ alias: 'customValidator', required: true }) validators!: Validation | null;
 
 	validate(control: AbstractControl): ValidationErrors | null {
+		if (!this.validators) return null;
 		let result = this.validators.isDuplicateKey(control.value);
 		return result ? { duplicateKey: true } : null;
 	}

@@ -8,25 +8,13 @@
 			<tbody>
 				<tr>
 					<td *ngFor="let col of tableHeaders">
-						<ng-container *ngIf="col === tablePKey then is_pkey else not_pkey"></ng-container>
-						<ng-template #is_pkey>
 							<input type='text' [(ngModel)]="record[col]" name={{col}}
 							[minlength]="validators.getColMinLength(col)"
 							[maxlength]="validators.getColMaxLength(col)"
 							[required]="validators.isRequired(col)"
 							[pattern]="validators.getPattern(col)"
 							[placeholder]="placeholders[col]"
-							[customValidator]="validators">
-						</ng-template>
-						<ng-template #not_pkey>
-							<input type='text' [(ngModel)]="record[col]" name={{col}}
-							[minlength]="validators.getColMinLength(col)"
-							[maxlength]="validators.getColMaxLength(col)"
-							[required]="validators.isRequired(col)"
-							[pattern]="validators.getPattern(col)"
-							[placeholder]="placeholders[col]">
-						</ng-template>
-						
+							[customValidator]="col === tablePKey ? validators: null">			  
 					</td>
 				</tr>
 			</tbody>
