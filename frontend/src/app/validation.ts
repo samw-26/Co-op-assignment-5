@@ -10,6 +10,32 @@ export class Validation {
 		this.checkConstraints = checkConstraints;
 	}
 	
+	
+	private convertToBit(record: { [index: string]: any }) {
+		for (let col in record) {
+			const schema = this.getColumnSchema(col);
+			if (schema?.DATA_TYPE === "bit") {
+				record[col] = record[col] === "true";
+			}
+		}
+	}
+
+
+	private convertToNull(record: { [index: string]: any }) {
+		for (let col in record) {
+			if (typeof record[col] === "string" && record[col].trim() === "") {
+				record[col] = null;
+			}
+		}
+	}
+
+
+	correctDataTypes(record: { [index: string]: any}) {
+		this.convertToBit(record);
+		this.convertToNull(record);
+	}
+
+
 	getColumnSchema(column: string): Schema | undefined {
 		return this.tableSchema.find(e => e["COLUMN_NAME"] === column);
 	}
@@ -42,6 +68,6 @@ export class Validation {
 		}
 		const constraint = this.checkConstraints.find(e => e.name.includes(column))
 		const pattern = constraint?.definition.match(/(?<=').+(?=')/);
-		return pattern ? pattern[0] : "";
+		return pattern ? pattern[0] : /^\S(.*\S)?$/;
 	}
 }

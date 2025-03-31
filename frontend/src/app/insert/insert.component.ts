@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, viewChild } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
 import { TableService } from '../table.service';
 import { forkJoin } from 'rxjs';
 import { tableName } from '../table/table.component';
@@ -18,24 +18,31 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './insert.component.scss'
 })
 export class InsertComponent {
-	record: { [index: string]: string} = {};
 	tableHeaders: string[] = [];
+	record: { [index: string]: any} = {};
+	placeholders!: { [index: string]: any };;
 	tableSchema!: Schema[];
 	checkConstraints!: CheckConstraint[];
-	tablePKey: string = "";
+	tablePKey!: string;
+	insertForm = viewChild.required<NgForm>("insertForm");
 	validators!: Validation;
 	
 	constructor(private tblservice: TableService, private router: Router) {}
 	ngOnInit(): void {
 		forkJoin({
+			records: this.tblservice.fetchTable(tableName),
 			schema: this.tblservice.getSchema(tableName),
 			pkey: this.tblservice.getPkName(tableName),
 			checkConstraints: this.tblservice.getCheckConstraints(tableName)
 		}).subscribe({
-			next: ({ schema, pkey, checkConstraints }) => {
-				if (schema && pkey && checkConstraints) {
+			next: ({ records, schema, pkey, checkConstraints }) => {
+				if (records && schema && pkey && checkConstraints) {
+					this.placeholders = records[0];
 					schema.forEach(c => {
 						this.tableHeaders.push(c.COLUMN_NAME);
+					});
+					this.tableHeaders.forEach(col => {
+						this.record[col] = null;
 					});
 					this.tablePKey = pkey.COLUMN_NAME;
 					this.tableSchema = schema;
@@ -55,6 +62,11 @@ export class InsertComponent {
 
 
 	onInsert(): void {
-
+		if (this.insertForm().valid) {
+			this.validators.correctDataTypes(this.record);
+			this.tblservice.insertRecord(tableName, this.record).subscribe(() => {
+				this.router.navigateByUrl("")
+			});
+		}
 	}
 }

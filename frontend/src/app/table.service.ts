@@ -42,6 +42,11 @@ export class TableService {
 	}
 
 
+	insertRecord(table: string, record: { [index: string]: string }): Observable<ServerResponse> {
+		return this.http.post<ServerResponse>(`${this.apiurl}/${table}/insert`, record)
+	}
+
+
 	deleteRecord(table: string, id: string): Observable<ServerResponse> {
 		return this.http.delete<ServerResponse>(`${this.apiurl}/${table}/${id}`);
 	}

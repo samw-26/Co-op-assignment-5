@@ -61,14 +61,9 @@ export class DetailsComponent {
 
 	onUpdate(): void {
 		if (this.detailsForm().valid) {
-			for (let col in this.record) {
-				const schema = this.validators.getColumnSchema(col);
-				if (schema?.DATA_TYPE === "bit") {
-					this.record[col] = this.record[col] === "true";
-				}
-			}
+			this.validators.correctDataTypes(this.record);
 			this.tblservice.updateRecord(tableName, this.id, this.record).subscribe(() => {
-				this.router.navigateByUrl("/");
+				this.router.navigateByUrl("");
 			});
 		}
 	}

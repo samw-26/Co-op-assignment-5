@@ -12,14 +12,15 @@
 							[minlength]="validators.getColMinLength(col)"
 							[maxlength]="validators.getColMaxLength(col)"
 							[required]="validators.isRequired(col)"
-							[pattern]="validators.getPattern(col)">
+							[pattern]="validators.getPattern(col)"
+							[placeholder]="placeholders[col]">
 					</td>
 				</tr>
 			</tbody>
 		</table>
 	</div>
-	<footer>
+	<div class="button-container">
 		<button mat-button routerLink="">Cancel</button>
 		<button mat-button (click)="onInsert()" [disabled]="!insertForm.valid">Insert</button>
-	</footer>
+	</div>
 </form>

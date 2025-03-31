@@ -20,6 +20,11 @@ input {
 	text-align: center;
 }
 
+input.ng-invalid {
+	border-left: 5px solid red;
+}
+
+
 button[mat-button], button[mat-raised-button]  {
 	margin-top: 15px;
 	font-size: 1.2em;

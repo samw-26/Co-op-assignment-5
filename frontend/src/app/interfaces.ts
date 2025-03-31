@@ -1,3 +1,15 @@
+export interface authors_columns {
+	au_id: string,
+	au_lname: string,
+	au_fname: string,
+	phone: string,
+	address: string,
+	city: string,
+	state: string,
+	zip: string,
+	contract: string
+}
+
 export interface Schema {
 	COLUMN_NAME: string,
     IS_NULLABLE: string,

@@ -112,11 +112,20 @@ app.get("/api/:table/:id?", async (req: express.Request, res: express.Response) 
 
 
 /**
- * Route for updating record
+ * Route for updating record. Request body contains entire updated record.
  */
 app.put("/api/:table/:id", async (req: express.Request, res: express.Response) => {
 	let idName: string = await getPrimaryKey(req.params.table);
 	let queryStr = SqlString.format("UPDATE ?? SET ? WHERE ?? = ?", [req.params.table, req.body, idName, req.body[idName]]);
+	sqlQueryWrapper(req, res, queryStr);
+});
+
+
+/**
+ * Route for inserting record. Request body contains new record.
+ */
+app.post("/api/:table/insert", (req: express.Request, res: express.Response) => {
+	let queryStr = SqlString.format("INSERT INTO ?? VALUES (?)", [req.params.table, Object.values(req.body)]);
 	sqlQueryWrapper(req, res, queryStr);
 });
 
