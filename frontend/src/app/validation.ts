@@ -16,7 +16,8 @@ export class Validation {
 		for (let col in record) {
 			const schema = this.getColumnSchema(col);
 			if (schema?.DATA_TYPE === 'bit') {
-				record[col] = String(record[col]).toLowerCase() === 'true';
+				let val = String(record[col]).toLowerCase();
+				record[col] = val === 'true' || val === '1';
 			}
 		}
 	}

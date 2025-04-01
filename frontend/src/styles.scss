@@ -5,14 +5,20 @@ a:visited {
 	color: blue;
 }
 
-div:has(> table){
+table {
 	overflow: auto;
 	white-space: nowrap;
+	border-collapse: collapse;
 }
 
 
+th {
+	border: 1px, solid, black;
+}
+
 td {
-	padding: 0px 10px 0px 10px;
+	border: 1px, solid, black;
+	padding: 3px 10px 3px 10px;
 }
 
 
