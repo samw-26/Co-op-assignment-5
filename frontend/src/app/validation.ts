@@ -80,7 +80,7 @@ export class Validation {
 	 * @returns boolean if duplicate key is present.
 	 */
 	isDuplicateKey(key: string): boolean {
-		if (!this.tableInfo) { throw Error("isDuplicateKey required tableInfo parameter. Did you forget to instantiate it?") };
+		if (!this.tableInfo) { throw new Error("isDuplicateKey required tableInfo parameter. Did you forget to instantiate it?") };
 		for (let record of this.tableInfo.records) {
 			if (record[this.tableInfo.pkey] === key) return true
 		}

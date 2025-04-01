@@ -1,14 +1,14 @@
 <h1>Details Page</h1>
-<form #detailsForm="ngForm">
+<form #detailsForm="ngForm" (ngSubmit)="onUpdate()">
 	<div class="error-container">
 		<ng-container *ngFor="let col of tableHeaders">
-			<div [hidden]="detailsForm.controls[col]?.valid || detailsForm.controls[col]?.untouched">
+			<ng-template [ngIf]="detailsForm.controls[col]?.invalid && detailsForm.controls[col]?.touched">
 				<ng-container *ngIf="detailsForm.controls[col]?.errors as errors">
 					<div class="error-msg">
 						{{col}}: {{validators.getErrorMsg(col)}}
 					</div>
 				</ng-container>
-			</div>
+			</ng-template>
 		</ng-container>
 	</div>
 	<div>
@@ -33,6 +33,7 @@
 							[maxlength]="validators.getColMaxLength(col)"
 							[required]="validators.isRequired(col)"
 							[pattern]="validators.getPattern(col)"
+							[placeholder]="placeholders[col]"
 							[disabled]="col === tablePKey">
 						</ng-template>
 					</td>
@@ -42,7 +43,7 @@
 	</div>
 	<div class="button-container">
 		<button mat-button routerLink="" type="button">Cancel</button>
-		<button mat-button (click)="onUpdate()" [disabled]="!detailsForm.valid">Update</button>
-		<button mat-button class="del-btn" (click)="onDelete()">Delete</button>
+		<button mat-button type="submit" [disabled]="!detailsForm.valid">Update</button>
+		<button mat-button type="button" class="del-btn" (click)="onDelete()">Delete</button>
 	</div>
 </form>

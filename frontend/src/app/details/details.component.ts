@@ -1,7 +1,7 @@
 import { Component, Input, viewChild, ViewContainerRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableService } from '../table.service';
-import { CheckConstraint, Schema } from '../interfaces';
+import { authors_columns, CheckConstraint, Schema } from '../interfaces';
 import { forkJoin } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { Router, RouterLink } from '@angular/router';
@@ -11,6 +11,7 @@ import { pageNotFound } from '../app.routes';
 import { FormsModule, NgForm } from '@angular/forms';
 import { tableName } from '../table/table.component';
 import { Validation } from '../validation';
+import { authors_placeholders } from '../../placeholders';
 
 
 @Component({
@@ -23,6 +24,7 @@ export class DetailsComponent {
 	@Input() id!: string;
 	tableHeaders!: string[];
 	record!: { [index: string]: any };
+	placeholders: authors_columns = authors_placeholders
 	tableSchema!: Schema[];
 	checkConstraints!: CheckConstraint[];
 	tablePKey!: string;

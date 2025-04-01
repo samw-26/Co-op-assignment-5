@@ -7,7 +7,7 @@ export const authors_placeholders: authors_columns = {
 	phone: "000 000-0000",
 	address: "123 Main Street",
 	city: "Springfield",
-	state: "Oregon",
+	state: "OR",
 	zip: "12345",
 	contract: "false"
 }
