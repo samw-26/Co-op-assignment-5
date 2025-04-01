@@ -1,19 +1,22 @@
 import { Directive, Input } from '@angular/core';
 import { NG_VALIDATORS, Validator, AbstractControl, ValidationErrors } from '@angular/forms';
 import { CheckConstraint, Schema } from './interfaces';
+import { NgForm } from '@angular/forms';
 
 /**
  * Contains helper functions for validating form input. Functions designed to be binded to attributes in DOM.
  */
 export class Validation {
-	constructor(private readonly tableSchema: Schema[], private readonly checkConstraints: CheckConstraint[], private readonly tableInfo?: { records: { [index: string]: any }[], pkey: string }) { }
-
+	constructor(private readonly tableSchema: Schema[], private readonly checkConstraints: CheckConstraint[],
+		private readonly form: NgForm,
+		private readonly tableInfo?: { records: { [index: string]: any }[], pkey: string }) { }
+	readonly defaultPattern = /^\S(.*\S)?$/
 
 	private convertToBit(record: { [index: string]: any }) {
 		for (let col in record) {
 			const schema = this.getColumnSchema(col);
 			if (schema?.DATA_TYPE === 'bit') {
-				record[col] = record[col] === 'true';
+				record[col] = String(record[col]).toLowerCase() === 'true';
 			}
 		}
 	}
@@ -65,8 +68,8 @@ export class Validation {
 			return '^true$|^false$'
 		}
 		const constraint = this.checkConstraints.find(e => e.name.includes(column))
-		const pattern = constraint?.definition.match(/(?<=').+(?=')/);
-		return pattern ? pattern[0] : /^\S(.*\S)?$/;
+		const pattern = constraint?.definition.match(/(?<=').+(?=')/); // Gets pattern from check constraint.
+		return pattern ? pattern[0] : this.defaultPattern;
 	}
 
 
@@ -82,17 +85,44 @@ export class Validation {
 		}
 		return false;
 	}
+
+
+	/**
+	 * Displays corresponding error msg.
+	 * @param col Column name
+	 * @returns String containing error msg.
+	 */
+	getErrorMsg(col: string): string {
+		let errors = this.form.controls[col].errors;
+		if (!errors) return '';
+		if (errors['required']) {
+			return 'Field is required.';
+		}
+		else if (errors['pattern']) {
+			if (errors['pattern'].requiredPattern == this.defaultPattern) {
+				return 'Field cannot contain leading or trailing spaces.';
+			}
+			return 'Does not match required format.';
+		}
+		else if (errors['duplicateKey']) {
+			return 'Primary key already exists in table.';
+		}
+		else if (errors['minlength']) {
+			return `Must be ${errors['minlength']['requiredLength']} characters.` 
+		}
+		return ''
+	}
 }
 
 /**
- * Custom validator wrapper.
+ * Validates that primary key is not duplicate.
  */
 @Directive({
-	selector: '[customValidator]',
-	providers: [{ provide: NG_VALIDATORS, useExisting: CustomValidatorDirective, multi: true }]
+	selector: '[duplicateKeyValidator]',
+	providers: [{ provide: NG_VALIDATORS, useExisting: DuplicateKeyValidatorDirective, multi: true }]
 })
-export class CustomValidatorDirective implements Validator {
-	@Input({ alias: 'customValidator', required: true }) validators!: Validation | null;
+export class DuplicateKeyValidatorDirective implements Validator {
+	@Input({ alias: 'duplicateKeyValidator', required: true }) validators!: Validation | null;
 
 	validate(control: AbstractControl): ValidationErrors | null {
 		if (!this.validators) return null;

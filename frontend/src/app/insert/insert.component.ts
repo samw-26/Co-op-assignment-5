@@ -4,23 +4,24 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { TableService } from '../table.service';
 import { forkJoin } from 'rxjs';
 import { tableName } from '../table/table.component';
-import { CheckConstraint, Schema } from '../interfaces';
+import { authors_columns, CheckConstraint, Schema } from '../interfaces';
 import { Router, RouterLink } from '@angular/router';
 import { pageNotFound } from '../app.routes';
-import { Validation, CustomValidatorDirective } from '../validation';
+import { Validation, DuplicateKeyValidatorDirective } from '../validation';
 import { MatButtonModule } from '@angular/material/button';
+import { authors_placeholders } from '../../placeholders';
 
 
 @Component({
   selector: 'app-insert',
-  imports: [FormsModule, CommonModule, MatButtonModule, RouterLink, CustomValidatorDirective],
+  imports: [FormsModule, CommonModule, MatButtonModule, RouterLink, DuplicateKeyValidatorDirective],
   templateUrl: './insert.component.html',
   styleUrl: './insert.component.scss'
 })
 export class InsertComponent {
 	tableHeaders: string[] = [];
 	record: { [index: string]: any} = {};
-	placeholders!: { [index: string]: any };;
+	placeholders: authors_columns = authors_placeholders
 	tableSchema!: Schema[];
 	checkConstraints!: CheckConstraint[];
 	tablePKey!: string;
@@ -38,7 +39,6 @@ export class InsertComponent {
 		}).subscribe({
 			next: ({ records, schema, pkey, checkConstraints }) => {
 				if (records && schema && pkey && checkConstraints) {
-					this.placeholders = records[0];
 					schema.forEach(c => {
 						this.tableHeaders.push(c.COLUMN_NAME);
 					});
@@ -48,7 +48,7 @@ export class InsertComponent {
 					this.tablePKey = pkey.COLUMN_NAME;
 					this.tableSchema = schema;
 					this.checkConstraints = checkConstraints;
-					this.validators = new Validation(this.tableSchema, this.checkConstraints, {records: records, pkey: this.tablePKey});
+					this.validators = new Validation(this.tableSchema, this.checkConstraints, this.insertForm(),{records: records, pkey: this.tablePKey});
 				}
 				else {
 					this.router.navigateByUrl(pageNotFound);

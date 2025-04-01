@@ -45,7 +45,7 @@ export class DetailsComponent {
 					this.tablePKey = pkey.COLUMN_NAME;
 					this.tableSchema = schema;
 					this.checkConstraints = checkConstraints;
-					this.validators = new Validation(this.tableSchema, this.checkConstraints);
+					this.validators = new Validation(this.tableSchema, this.checkConstraints, this.detailsForm());
 				}
 				else {
 					this.router.navigateByUrl(pageNotFound);

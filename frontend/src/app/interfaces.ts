@@ -8,6 +8,7 @@ export interface authors_columns {
 	state: string,
 	zip: string,
 	contract: string
+	[key: string]: any; 
 }
 
 export interface Schema {

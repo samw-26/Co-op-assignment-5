@@ -1,20 +1,41 @@
 <h1>Insert new record</h1>
 <form #insertForm="ngForm">
+	<div class="error-container">
+		<ng-container *ngFor="let col of tableHeaders">
+			<div [hidden]="insertForm.controls[col]?.valid || insertForm.controls[col]?.untouched">
+				<ng-container *ngIf="insertForm.controls[col]?.errors as errors">
+					<div class="error-msg">
+						{{col}}: {{validators.getErrorMsg(col)}}
+					</div>
+				</ng-container>
+			</div>
+		</ng-container>
+	</div>
 	<div>
 		<table>
 			<thead>
-				<th *ngFor="let header of tableHeaders">{{header}}</th>
+				<th *ngFor="let header of tableHeaders">
+					{{header}} <span class="error-msg">{{validators.isRequired(header) ? '*' : ''}}</span>
+				</th>
 			</thead>
 			<tbody>
 				<tr>
-					<td *ngFor="let col of tableHeaders">
-							<input type='text' [(ngModel)]="record[col]" name={{col}}
-							[minlength]="validators.getColMinLength(col)"
-							[maxlength]="validators.getColMaxLength(col)"
-							[required]="validators.isRequired(col)"
-							[pattern]="validators.getPattern(col)"
-							[placeholder]="placeholders[col]"
-							[customValidator]="col === tablePKey ? validators: null">			  
+					<td *ngFor="let col of tableHeaders" class="field-container">
+							<ng-container *ngIf="validators.getColumnSchema(col)?.DATA_TYPE === 'bit'; else elseblock">
+								<select [ngModel]="record[col]" name={{col}} required>
+									<option>False</option>
+									<option>True</option>
+								</select>
+							</ng-container>
+							<ng-template #elseblock>
+								<input type='text' [(ngModel)]="record[col]" name={{col}}
+								[minlength]="validators.getColMinLength(col)"
+								[maxlength]="validators.getColMaxLength(col)"
+								[required]="validators.isRequired(col)"
+								[pattern]="validators.getPattern(col)"
+								[placeholder]="placeholders[col]"
+								[duplicateKeyValidator]="col === tablePKey ? validators: null">
+							</ng-template>
 					</td>
 				</tr>
 			</tbody>
