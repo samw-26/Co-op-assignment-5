@@ -1,9 +1,9 @@
 <h1>{{title}}</h1>
-<form #form="ngForm" (ngSubmit)="onSubmit()">
+<form #recordForm="ngForm" (ngSubmit)="getSubmitInfo()?.submitFunction()">
 	<div class="error-container">
 		<ng-container *ngFor="let col of tableHeaders">
-			<div [hidden]="form.controls[col]?.valid || form.controls[col]?.untouched">
-				<ng-container *ngIf="form.controls[col]?.errors as errors">
+			<div [hidden]="recordForm.controls[col]?.valid || recordForm.controls[col]?.untouched">
+				<ng-container *ngIf="recordForm.controls[col]?.errors as errors">
 					<div class="error-msg">
 						{{col}}: {{validators.getErrorMsg(col)}}
 					</div>
@@ -18,11 +18,11 @@
 					{{header}} <span class="error-msg">{{validators.isRequired(header) ? '*' : ''}}</span>
 				</th>
 			</thead>
-			<tbody>
+			<tbody *ngIf="validators">
 				<tr>
 					<td *ngFor="let col of tableHeaders" class="field-container">
 						<ng-template [ngIf]="validators.getColumnSchema(col)?.DATA_TYPE === 'bit'" [ngIfElse]="elseblock">
-							<select [ngModel]="record[col]" name={{col}} required>
+							<select [(ngModel)]="record[col]" name={{col}} required>
 								<option value="true">True</option>
 								<option value="false">False</option>
 							</select>
@@ -35,7 +35,7 @@
 							[pattern]="validators.getPattern(col)"
 							[placeholder]="placeholders[col]"
 							[duplicateKeyValidator]="col === tablePKey ? validators: null"
-							[disabled]="col === tablePKey && disablePKey">
+							[disabled]="col === tablePKey && currentTableType === TableType.Details">
 						</ng-template>
 					</td>
 				</tr>
@@ -44,7 +44,7 @@
 	</div>
 	<div class="button-container">
 		<button mat-button routerLink="" type="button">Cancel</button>
-		<button mat-button type="submit" [disabled]="!form.valid">{{submitText}}</button>
-		<button mat-button type="button" (click)="onDelete()" *ngIf="showDelete">Delete</button>
+		<button mat-button type="submit" [disabled]="!recordForm.valid">{{getSubmitInfo()?.name}}</button>
+		<button mat-button type="button" class="del-btn" (click)="onDelete()" *ngIf="currentTableType === TableType.Details">Delete</button>
 	</div>
 </form>

@@ -1,49 +1,6 @@
-<h1>Details Page</h1>
-<form #detailsForm="ngForm" (ngSubmit)="onUpdate()">
-	<div class="error-container">
-		<ng-container *ngFor="let col of tableHeaders">
-			<ng-template [ngIf]="detailsForm.controls[col]?.invalid && detailsForm.controls[col]?.touched">
-				<ng-container *ngIf="detailsForm.controls[col]?.errors as errors">
-					<div class="error-msg">
-						{{col}}: {{validators.getErrorMsg(col)}}
-					</div>
-				</ng-container>
-			</ng-template>
-		</ng-container>
-	</div>
-	<div>
-		<table>
-			<thead>
-				<th *ngFor="let header of tableHeaders">
-					{{header}} <span class="error-msg">{{validators.isRequired(header) ? '*' : ''}}</span>
-				</th>
-			</thead>
-			<tbody>
-				<tr>
-					<td *ngFor="let col of tableHeaders" class="field-container">
-						<ng-template [ngIf]="validators.getColumnSchema(col)?.DATA_TYPE === 'bit'" [ngIfElse]="elseblock">
-							<select [ngModel]="record[col]" name={{col}} required>
-								<option value="true">True</option>
-								<option value="false">False</option>
-							</select>
-						</ng-template>
-						<ng-template #elseblock>
-							<input type='text' [(ngModel)]="record[col]" name={{col}}
-							[minlength]="validators.getColMinLength(col)"
-							[maxlength]="validators.getColMaxLength(col)"
-							[required]="validators.isRequired(col)"
-							[pattern]="validators.getPattern(col)"
-							[placeholder]="placeholders[col]"
-							[disabled]="col === tablePKey">
-						</ng-template>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-	<div class="button-container">
-		<button mat-button routerLink="" type="button">Cancel</button>
-		<button mat-button type="submit" [disabled]="!detailsForm.valid">Update</button>
-		<button mat-button type="button" class="del-btn" (click)="onDelete()">Delete</button>
-	</div>
-</form>
+<app-record 
+	title="Details Page"
+	[id]="id"
+	[currentTableType]="TableType.Details"
+	>
+</app-record>

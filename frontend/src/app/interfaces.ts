@@ -1,3 +1,5 @@
+import { Observable } from "rxjs";
+
 export interface authors_columns {
 	au_id: string,
 	au_lname: string,
@@ -18,6 +20,11 @@ export interface Schema {
     CHARACTER_MAXIMUM_LENGTH: number,
     NUMERIC_PRECISION: number,
     NUMERIC_SCALE: number
+}
+
+export interface SubmitInfo {
+	name: string,
+	submitFunction: Function
 }
 
 

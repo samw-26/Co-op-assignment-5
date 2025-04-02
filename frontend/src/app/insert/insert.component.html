@@ -1,48 +1,5 @@
-<h1>Insert new record</h1>
-<form #insertForm="ngForm">
-	<div class="error-container">
-		<ng-container *ngFor="let col of tableHeaders">
-			<div [hidden]="insertForm.controls[col]?.valid || insertForm.controls[col]?.untouched">
-				<ng-container *ngIf="insertForm.controls[col]?.errors as errors">
-					<div class="error-msg">
-						{{col}}: {{validators.getErrorMsg(col)}}
-					</div>
-				</ng-container>
-			</div>
-		</ng-container>
-	</div>
-	<div>
-		<table>
-			<thead>
-				<th *ngFor="let header of tableHeaders">
-					{{header}} <span class="error-msg">{{validators.isRequired(header) ? '*' : ''}}</span>
-				</th>
-			</thead>
-			<tbody>
-				<tr>
-					<td *ngFor="let col of tableHeaders" class="field-container">
-						<ng-template [ngIf]="validators.getColumnSchema(col)?.DATA_TYPE === 'bit'" [ngIfElse]="elseblock">
-							<select [ngModel]="record[col]" name={{col}} required>
-								<option value="true">True</option>
-								<option value="false">False</option>
-							</select>
-						</ng-template>
-						<ng-template #elseblock>
-							<input type='text' [(ngModel)]="record[col]" name={{col}}
-							[minlength]="validators.getColMinLength(col)"
-							[maxlength]="validators.getColMaxLength(col)"
-							[required]="validators.isRequired(col)"
-							[pattern]="validators.getPattern(col)"
-							[placeholder]="placeholders[col]"
-							[duplicateKeyValidator]="col === tablePKey ? validators: null">
-						</ng-template>
-					</td>
-				</tr>
-			</tbody>
-		</table>	
-	</div>
-	<div class="button-container">
-		<button mat-button routerLink="" type="button">Cancel</button>
-		<button mat-button (click)="onInsert()" [disabled]="!insertForm.valid">Insert</button>
-	</div>
-</form>
+<app-record 
+	title="Insert new record"
+	[currentTableType]="TableType.Insert"
+	>
+</app-record>
