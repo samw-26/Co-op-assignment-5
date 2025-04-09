@@ -42,7 +42,7 @@ function queryDb(req: express.Request, res: express.Response, connErr: MsNodeSql
 				res.send({message:"Query executed."});
 			}
 			else {
-				res.status(404).send({message:"No results found from query."});
+				res.send([]);
 			}
 		}
 	});

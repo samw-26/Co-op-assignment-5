@@ -65,9 +65,6 @@ export class Validation {
 
 
 	getPattern(column: string): string | RegExp {
-		if (this.getColumnSchema(column)?.DATA_TYPE === 'bit') {
-			return '^true$|^false$'
-		}
 		const constraint = this.checkConstraints.find(e => e.name.includes(column))
 		const pattern = constraint?.definition.match(/(?<=').+(?=')/); // Gets pattern from check constraint.
 		return pattern ? pattern[0] : this.defaultPattern;
