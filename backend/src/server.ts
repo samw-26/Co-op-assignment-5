@@ -66,6 +66,14 @@ async function getPrimaryKey(table: string) {
 
 
 /**
+ * Route for getting all tables.
+ */
+app.get("/api/tables", (req: express.Request, res: express.Response) => {
+	let queryStr = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE'";
+	sqlQueryWrapper(req, res, queryStr);
+});
+
+/**
  * Route for getting primary key of table.
  */
 app.get("/api/:table/pk", (req: express.Request, res: express.Response) => {

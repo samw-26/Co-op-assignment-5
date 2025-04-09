@@ -1,4 +1,6 @@
-import { Observable } from "rxjs";
+export interface table {
+    TABLE_NAME: string
+}
 
 export interface authors_columns {
 	au_id: string,

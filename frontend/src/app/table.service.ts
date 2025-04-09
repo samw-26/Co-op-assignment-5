@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import { CheckConstraint, PrimaryKey, Schema, ServerResponse } from './interfaces';
+import { CheckConstraint, PrimaryKey, Schema, ServerResponse, table } from './interfaces';
 
 @Injectable({
 	providedIn: 'root'
@@ -10,6 +10,9 @@ export class TableService {
 	private readonly apiurl = "http://localhost:5000/api"
 	constructor(private http: HttpClient) {}
 
+    getTables(): Observable<table[]> {
+        return this.http.get<table[]>(`${this.apiurl}/tables`);
+    }
 	
 	fetchTable(table: string): Observable<{ [index: string]: string }[]> {
 		return this.http.get<{ [index: string]: string }[]>(`${this.apiurl}/${table}`);
