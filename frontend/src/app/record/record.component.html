@@ -1,43 +1,44 @@
 <h1>{{title}}</h1>
 <form #recordForm="ngForm" (ngSubmit)="getSubmitInfo()?.submitFunction()">
 	<div class="error-container">
-		<ng-container *ngFor="let col of tableHeaders">
-			<div [hidden]="recordForm.controls[col]?.valid || recordForm.controls[col]?.untouched">
+        @for (col of tableHeaders; track $index) {
+            <div [hidden]="recordForm.controls[col]?.valid || recordForm.controls[col]?.untouched">
 				<ng-container *ngIf="recordForm.controls[col]?.errors as errors">
 					<div class="error-msg">
 						{{col}}: {{validators.getErrorMsg(col)}}
 					</div>
 				</ng-container>
 			</div>
-		</ng-container>
+        }
 	</div>
 	<div>
 		<table>
 			<thead>
-				<th *ngFor="let header of tableHeaders">
-					{{header}} <span class="error-msg">{{validators.isRequired(header) ? '*' : ''}}</span>
-				</th>
+                @for (header of tableHeaders; track $index) {
+                    <th>
+                        {{header}} <span class="error-msg">{{validators.isRequired(header) ? '*' : ''}}</span>
+                    </th>
+                }
 			</thead>
-			<tbody *ngIf="validators">
+			<tbody>
 				<tr>
-					<td *ngFor="let col of tableHeaders" class="field-container">
-						<ng-template [ngIf]="validators.getColumnSchema(col)?.DATA_TYPE === 'bit'" [ngIfElse]="elseblock">
-							<select [(ngModel)]="record[col]" name={{col}} required>
-								<option value="true">True</option>
-								<option value="false">False</option>
-							</select>
-						</ng-template>
-						<ng-template #elseblock>
-							<input type='text' [(ngModel)]="record[col]" name={{col}}
-							[minlength]="validators.getColMinLength(col)"
-							[maxlength]="validators.getColMaxLength(col)"
-							[required]="validators.isRequired(col)"
-							[pattern]="validators.getPattern(col)"
-							[placeholder]="placeholders[col]"
-							[duplicateKeyValidator]="col === tablePKey ? validators: null"
-							[disabled]="col === tablePKey && currentTableType === TableType.Details">
-						</ng-template>
-					</td>
+                    @for (col of tableHeaders; track $index) {
+                        <td class="field-container">
+                            @if (validators.getColumnSchema(col)?.DATA_TYPE === 'bit') {
+                                <input type="checkbox" [(ngModel)]="record[col]" name={{col}}>
+                            }
+                            @else {
+                                <input type='text' [(ngModel)]="record[col]" name={{col}}
+                                [minlength]="validators.getColMinLength(col)"
+                                [maxlength]="validators.getColMaxLength(col)"
+                                [required]="validators.isRequired(col)"
+                                [pattern]="validators.getPattern(col)"
+                                [placeholder]="placeholders[col]"
+                                [duplicateKeyValidator]="col === tablePKey ? validators: null"
+                                [disabled]="col === tablePKey && currentTableType === TableType.Details">
+                            }
+                        </td>
+                    }
 				</tr>
 			</tbody>
 		</table>	

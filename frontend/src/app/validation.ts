@@ -10,17 +10,8 @@ export class Validation {
 	constructor(private readonly tableSchema: Schema[], private readonly checkConstraints: CheckConstraint[],
 		private readonly form: NgForm,
 		private readonly tableInfo?: { records: { [index: string]: any }[], pkey: string }) { }
-	readonly defaultPattern = /^\S(.*\S)?$/
-
-	private convertToBit(record: { [index: string]: any }) {
-		for (let col in record) {
-			const schema = this.getColumnSchema(col);
-			if (schema?.DATA_TYPE === 'bit') {
-				let val = String(record[col]).toLowerCase();
-				record[col] = val === 'true' || val === '1';
-			}
-		}
-	}
+	
+    readonly defaultPattern = /^\S(.*\S)?$/
 
 
 	private convertToNull(record: { [index: string]: any }) {
@@ -33,7 +24,6 @@ export class Validation {
 
 
 	correctDataTypes(record: { [index: string]: any }) {
-		this.convertToBit(record);
 		this.convertToNull(record);
 	}
 

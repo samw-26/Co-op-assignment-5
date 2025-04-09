@@ -3,13 +3,23 @@
 	<h3>{{tableName}} table</h3>
 	<table>
 		<thead>
-			<th *ngFor="let header of tableHeaders">{{header}}</th>
+            @for (header of tableHeaders; track $index) {
+                <th>{{header}}</th>
+            }
 		</thead>
 		<tbody>
-			<tr *ngFor="let row of tableRows">
-				<td><a routerLink="{{row[tablePKey]}}" target="">{{row[tablePKey]}}</a></td>
-				<td *ngFor="let col of tableHeaders.slice(1)">{{row[col]}}</td>
-			</tr>
+            @for (row of tableRows; track row[tablePKey]) {
+                <tr>
+                    @for (col of tableHeaders; track $index) {
+                        @if (col == tablePKey) {
+                            <td><a routerLink="{{row[col]}}">{{row[col]}}</a></td>
+                        }
+                        @else {
+                            <td>{{row[col]}}</td>
+                        }
+                    }
+                </tr>
+            }
 		</tbody>
 	</table>
 	<button mat-raised-button routerLink="insert">Insert</button>
