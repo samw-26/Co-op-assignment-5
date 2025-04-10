@@ -22,23 +22,14 @@ td {
 }
 
 
-input, select {
+input {
 	font-size: 1em;
 	width:8em;
 	text-align: center;
 }
 
-.error-container {
-	padding-bottom: 10px;
-}
-.error-msg {
-	color: red;
+button[mat-button], button[mat-raised-button] {
+    font-size: 1.2em;
 }
 
-
-button[mat-button], button[mat-raised-button]  {
-	margin-top: 15px;
-	margin-right: 0.8em;
-	font-size: 1.2em;
-}
 

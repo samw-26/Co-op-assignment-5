@@ -17,7 +17,7 @@ export const routes: Routes = [
 		title: "Insert Record"
 	},
 	{
-		path: ":id",
+		path: ":table/:id",
 		component: DetailsComponent,
 		title: "Details"
 	},

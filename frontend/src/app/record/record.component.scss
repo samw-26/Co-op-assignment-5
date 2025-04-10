@@ -1,4 +1,19 @@
+button[mat-button]  {
+    margin-top: 15px;
+    margin-right: 0.8em;
+}
+
 button[mat-button].del-btn {
 	color: red;
 }
+
+.error-container {
+	padding-bottom: 10px;
+}
+
+.error-msg {
+	color: red;
+}
+
+
 

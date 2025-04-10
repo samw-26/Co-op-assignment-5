@@ -8,7 +8,6 @@ import { forkJoin, Observable } from 'rxjs';
 import { TableService } from '../table.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Router, RouterLink } from '@angular/router';
-import { tableName } from '../table/table.component';
 import { pageNotFound } from '../app.routes';
 import { DeleteDialog } from '../details/delete.dialog.component';
 import { MatButton } from '@angular/material/button';
@@ -49,7 +48,7 @@ export class RecordComponent {
 
 	recordForm = viewChild.required<NgForm>("recordForm");
 	validators!: Validation;
-	placeholders: authors_columns = authors_placeholders;
+	//placeholders: authors_columns = authors_placeholders;
 	
 	constructor(private tblservice: TableService, private dialog: MatDialog, private router: Router) {
 		this.tableInfo.set(TableType.Details, this.detailsSubmitInfo);
@@ -58,12 +57,12 @@ export class RecordComponent {
 
 	ngOnInit() {
 		let observables: {[index: string]: Observable<any>} = {
-			table: this.tblservice.fetchTable(tableName),
-			pkey: this.tblservice.getPkName(tableName),
-			schema: this.tblservice.getSchema(tableName),
-			checkConstraints: this.tblservice.getCheckConstraints(tableName)
+			table: this.tblservice.fetchTable(),
+			pkey: this.tblservice.getPks(),
+			schema: this.tblservice.getSchema(),
+			checkConstraints: this.tblservice.getCheckConstraints()
 		}
-		if (this.id) observables['record'] = this.tblservice.getRecord(tableName, this.id);
+		if (this.id) observables['record'] = this.tblservice.getRecord(this.id);
 
 		forkJoin(observables).subscribe({
 			next: ({ table, record, pkey, schema, checkConstraints }) => {
@@ -102,7 +101,7 @@ export class RecordComponent {
 		if (this.recordForm().valid) {
 			console.log(this.record);
 			this.validators.correctDataTypes(this.record);
-			this.tblservice.updateRecord(tableName, this.id, this.record).subscribe(() => {
+			this.tblservice.updateRecord(this.id, this.record).subscribe(() => {
 				this.router.navigateByUrl("");
 			});
 		}
@@ -114,7 +113,7 @@ export class RecordComponent {
 		});
 		dialogRef.afterClosed().subscribe(result => {
 			if (result) {
-				this.tblservice.deleteRecord(tableName, this.id).subscribe(() => {
+				this.tblservice.deleteRecord(this.id).subscribe(() => {
 					this.router.navigateByUrl("/");
 				});
 			}
@@ -124,7 +123,7 @@ export class RecordComponent {
 	onInsert(): void {
 		if (this.recordForm().valid) {
 			this.validators.correctDataTypes(this.record);
-			this.tblservice.insertRecord(tableName, this.record).subscribe({
+			this.tblservice.insertRecord(this.record).subscribe({
 				next: () => this.router.navigateByUrl(""),
 				error: e => console.log(e.error)
 			});

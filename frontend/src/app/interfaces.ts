@@ -37,7 +37,7 @@ export interface CheckConstraint {
 
 
 export interface PrimaryKey {
-	COLUMN_NAME: string
+	Column_Name: string
 }
 
 

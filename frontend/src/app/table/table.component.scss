@@ -1,0 +1,33 @@
+#tableContainer {
+    width: fit-content;
+}
+
+#tableContainerHeader {
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#tableSelect {
+    margin-left:10px;
+}
+
+tr:hover {
+    cursor: pointer;
+    background-color: lightgrey;
+}
+
+
+
+label {
+    font-size:1.2em;
+}
+
+select {
+    font-size:1.2em;
+    text-align:center;
+}
+
+#insertBtn {
+    margin-bottom: 10px;
+}

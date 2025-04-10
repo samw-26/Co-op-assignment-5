@@ -1,26 +1,32 @@
 <h1>Main Page</h1>
 @if (tableRows) {
-	<h3>{{tableName}} table</h3>
-	<table>
-		<thead>
-            @for (header of tableHeaders; track $index) {
-                <th>{{header}}</th>
-            }
-		</thead>
-		<tbody>
-            @for (row of tableRows; track row[tablePKey]) {
-                <tr>
-                    @for (col of tableHeaders; track $index) {
-                        @if (col == tablePKey) {
-                            <td><a routerLink="{{row[col]}}">{{row[col]}}</a></td>
-                        }
-                        @else {
-                            <td>{{row[col]}}</td>
-                        }
+    <div id="tableContainer">
+        <div id="tableContainerHeader">
+            <div>
+                <label for="tableSelect"><strong>Table:</strong></label>
+                <select id="tableSelect" [formControl]="tableNameSelect" (change)="onTableChange()">
+                    @for (table of tables; track $index) {
+                        <option value={{table}}>{{table}}</option>
                     }
-                </tr>
-            }
-		</tbody>
-	</table>
-	<button mat-raised-button routerLink="insert">Insert</button>
+                </select>
+            </div>
+            <button id="insertBtn" mat-raised-button routerLink="insert">Insert</button>
+        </div>
+            <table>
+                <thead>
+                @for (header of tableHeaders; track $index) {
+                    <th>{{header}}</th>
+                }
+                </thead>
+                <tbody>
+                @for (row of tableRows; track $index) {
+                    <tr routerLink={{getRecordRoute(row)}}>
+                        @for (col of tableHeaders; track $index) {
+                            <td>{{row[col] ? row[col].length > 30 ? row[col].slice(0, 27) + "..." : row[col] : null}}</td>
+                        }
+                    </tr>
+                }
+                </tbody>
+            </table>
+    </div>
 }

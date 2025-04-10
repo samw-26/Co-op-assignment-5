@@ -90,7 +90,7 @@ export class Validation {
 			if (errors['pattern'].requiredPattern == this.defaultPattern) {
 				return 'Field cannot contain leading or trailing spaces.';
 			}
-			return 'Does not match required format.';
+			return `Does not match required format. ${this.getPattern(col)}`;
 		}
 		else if (errors['duplicateKey']) {
 			return 'Primary key already exists in table.';

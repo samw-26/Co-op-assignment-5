@@ -8,49 +8,58 @@ import { CheckConstraint, PrimaryKey, Schema, ServerResponse, table } from './in
 })
 export class TableService {
 	private readonly apiurl = "http://localhost:5000/api"
+    tableName: string = '';
+    pKeys: string[] = [];
 	constructor(private http: HttpClient) {}
+
 
     getTables(): Observable<table[]> {
         return this.http.get<table[]>(`${this.apiurl}/tables`);
     }
 	
-	fetchTable(table: string): Observable<{ [index: string]: string }[]> {
-		return this.http.get<{ [index: string]: string }[]>(`${this.apiurl}/${table}`);
+	fetchTable(): Observable<{ [index: string]: string }[]> {
+		return this.http.get<{ [index: string]: string }[]>(`${this.apiurl}/${this.tableName}`);
 	}
 
 
-	getRecord(table: string, id: string): Observable<{ [index: string]: string } | null> {
-		return this.http.get<{ [index: string]: string }[]>(`${this.apiurl}/${table}/${id}`, {observe: "response"})
+	getRecord(id: string): Observable<{ [index: string]: string } | null> {
+		return this.http.get<{ [index: string]: string }[]>(`${this.apiurl}/${this.tableName}/${id}`, {observe: "response"})
 		.pipe(map((res: HttpResponse<{ [index: string]: string }[]>) => res.body ? res.body[0] : null))
 	}
 
 
-	getPkName(table: string): Observable<PrimaryKey> {
-		return this.http.get<PrimaryKey[]>(`${this.apiurl}/${table}/pk`).pipe(map(obj => obj[0]))
+	getPks(): Observable<string[]> {
+		return this.http.get<PrimaryKey[]>(`${this.apiurl}/${this.tableName}/pk`).pipe(map(pkObjArray => {
+            let pks: string[] = [];
+            for (let pkObj of pkObjArray) {
+                pks.push(pkObj.Column_Name);
+            }
+            return pks;
+        })); 
 	}
 
 
-	getSchema(table: string): Observable<Schema[]> {
-		return this.http.get<Schema[]>(`${this.apiurl}/${table}/schema`);
+	getSchema(): Observable<Schema[]> {
+		return this.http.get<Schema[]>(`${this.apiurl}/${this.tableName}/schema`);
 	}
 
 
-	getCheckConstraints(table: string): Observable<CheckConstraint[]> {
-		return this.http.get<CheckConstraint[]>(`${this.apiurl}/${table}/ck`);
+	getCheckConstraints(): Observable<CheckConstraint[]> {
+		return this.http.get<CheckConstraint[]>(`${this.apiurl}/${this.tableName}/ck`);
 	}
 
 
-	updateRecord(table: string, id: string, data: { [index: string]: string }): Observable<ServerResponse> {
-		return this.http.put<ServerResponse>(`${this.apiurl}/${table}/${id}`, data);
+	updateRecord(id: string, data: { [index: string]: string }): Observable<ServerResponse> {
+		return this.http.put<ServerResponse>(`${this.apiurl}/${this.tableName}/${id}`, data);
 	}
 
 
-	insertRecord(table: string, record: { [index: string]: string }): Observable<ServerResponse> {
-		return this.http.post<ServerResponse>(`${this.apiurl}/${table}/insert`, record)
+	insertRecord(record: { [index: string]: string }): Observable<ServerResponse> {
+		return this.http.post<ServerResponse>(`${this.apiurl}/${this.tableName}/insert`, record)
 	}
 
 
-	deleteRecord(table: string, id: string): Observable<ServerResponse> {
-		return this.http.delete<ServerResponse>(`${this.apiurl}/${table}/${id}`);
+	deleteRecord(id: string): Observable<ServerResponse> {
+		return this.http.delete<ServerResponse>(`${this.apiurl}/${this.tableName}/${id}`);
 	}
 }
