@@ -15,7 +15,7 @@ import { FormControl, ReactiveFormsModule, ValidationErrors, ValidatorFn, Valida
 })
 export class TableComponent {
     tables: string[] = [];
-	tableNameSelect = new FormControl('', [Validators.required, this.selectValidator]);
+	tableNameSelect = new FormControl('');
 	tableRows!: { [index: string]: string }[];
 	tableHeaders!: string[];
 

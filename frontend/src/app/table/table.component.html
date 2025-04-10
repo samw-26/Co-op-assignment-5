@@ -22,7 +22,7 @@
                 @for (row of tableRows; track $index) {
                     <tr routerLink={{getRecordRoute(row)}}>
                         @for (col of tableHeaders; track $index) {
-                            <td>{{row[col] ? row[col].length > 30 ? row[col].slice(0, 27) + "..." : row[col] : null}}</td>
+                            <td title={{row[col]}}>{{row[col] ? row[col].length > 30 ? row[col].slice(0, 27) + "..." : row[col] : row[col]}}</td>
                         }
                     </tr>
                 }

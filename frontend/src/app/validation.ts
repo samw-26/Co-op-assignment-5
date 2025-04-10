@@ -9,7 +9,7 @@ import { NgForm } from '@angular/forms';
 export class Validation {
 	constructor(private readonly tableSchema: Schema[], private readonly checkConstraints: CheckConstraint[],
 		private readonly form: NgForm,
-		private readonly tableInfo?: { records: { [index: string]: any }[], pkey: string }) { }
+		private readonly tableInfo?: { records: { [index: string]: any }[], pKeys: string }) { }
 	
     readonly defaultPattern = /^\S(.*\S)?$/
 
@@ -69,7 +69,7 @@ export class Validation {
 	isDuplicateKey(key: string): boolean {
 		if (!this.tableInfo) { throw new Error("isDuplicateKey required tableInfo parameter. Did you forget to instantiate it?") };
 		for (let record of this.tableInfo.records) {
-			if (record[this.tableInfo.pkey] === key) return true
+			if (record[this.tableInfo.pKeys] === key) return true
 		}
 		return false;
 	}

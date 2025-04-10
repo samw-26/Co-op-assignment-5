@@ -16,18 +16,13 @@ import { CommonModule } from '@angular/common';
 })
 
 export class DeleteDialog {
-	readonly id: string = inject<{id: string}>(MAT_DIALOG_DATA)["id"];
 	readonly dialogRef = inject(MatDialogRef<DeleteDialog>);
-	readonly confirmationForm = viewChild.required<NgForm>('confirmationForm');
-	confirmValue: string = "";
 	onCancel(): void {
 		this.dialogRef.close()
 	}
 
 	onConfirm(): void {
-		if (this.confirmationForm().valid) {
-			this.dialogRef.close(true)
-		}
+        this.dialogRef.close(true);
 	}
 }
 
