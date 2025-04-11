@@ -10,7 +10,7 @@
                     }
                 </select>
             </div>
-            <button id="insertBtn" mat-raised-button routerLink="insert">Insert</button>
+            <button id="insertBtn" mat-raised-button [routerLink]="tblservice.tableName + '/insert'">Insert</button>
         </div>
             <table>
                 <thead>

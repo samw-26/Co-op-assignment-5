@@ -12,7 +12,7 @@ export const routes: Routes = [
 		title: "404 Page Not Found"
 	},
 	{
-		path: "insert",
+		path: ":table/insert",
 		component: InsertComponent,
 		title: "Insert Record"
 	},
