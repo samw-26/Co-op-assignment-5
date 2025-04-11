@@ -9,7 +9,7 @@ import { NgForm } from '@angular/forms';
 export class Validation {
 	constructor(private readonly tableSchema: Schema[], private readonly checkConstraints: CheckConstraint[],
 		private readonly form: NgForm,
-		private readonly tableInfo?: { records: { [index: string]: any }[], pKeys: string }) { }
+		private readonly tableInfo?: { records: { [index: string]: any }[], pKeys: string[] }) { }
 	
     readonly defaultPattern = /^\S(.*\S)?$/
 
@@ -66,13 +66,13 @@ export class Validation {
 	 * @param key 
 	 * @returns boolean if duplicate key is present.
 	 */
-	isDuplicateKey(key: string): boolean {
-		if (!this.tableInfo) { throw new Error("isDuplicateKey required tableInfo parameter. Did you forget to instantiate it?") };
-		for (let record of this.tableInfo.records) {
-			if (record[this.tableInfo.pKeys] === key) return true
-		}
-		return false;
-	}
+	// isDuplicateKey(key: string): boolean {
+	// 	if (!this.tableInfo) { throw new Error("isDuplicateKey required tableInfo parameter. Did you forget to instantiate it?") };
+	// 	for (let record of this.tableInfo.records) {
+	// 		if (record[this.tableInfo.pKeys] === key) return true
+	// 	}
+	// 	return false;
+	// }
 
 
 	/**
@@ -102,19 +102,19 @@ export class Validation {
 	}
 }
 
-/**
- * Validates that primary key is not duplicate.
- */
-@Directive({
-	selector: '[duplicateKeyValidator]',
-	providers: [{ provide: NG_VALIDATORS, useExisting: DuplicateKeyValidatorDirective, multi: true }]
-})
-export class DuplicateKeyValidatorDirective implements Validator {
-	@Input({ alias: 'duplicateKeyValidator', required: true }) validators!: Validation | null;
+// /**
+//  * Validates that primary key is not duplicate.
+//  */
+// @Directive({
+// 	selector: '[duplicateKeyValidator]',
+// 	providers: [{ provide: NG_VALIDATORS, useExisting: DuplicateKeyValidatorDirective, multi: true }]
+// })
+// export class DuplicateKeyValidatorDirective implements Validator {
+// 	@Input({ alias: 'duplicateKeyValidator', required: true }) validators!: Validation | null;
 
-	validate(control: AbstractControl): ValidationErrors | null {
-		if (!this.validators) return null;
-		let result = this.validators.isDuplicateKey(control.value);
-		return result ? { duplicateKey: true } : null;
-	}
-}
+// 	validate(control: AbstractControl): ValidationErrors | null {
+// 		if (!this.validators) return null;
+// 		let result = this.validators.isDuplicateKey(control.value);
+// 		return result ? { duplicateKey: true } : null;
+// 	}
+// }

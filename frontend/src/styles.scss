@@ -1,8 +1,23 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+.banner {
+    background-color: lightskyblue;
+    margin: 0px;
+    padding-bottom:10px;
+    padding-top:10px;
+    border-bottom: solid 2px black;
+    text-align: center;
+}
+
 a:visited {
 	color: blue;
+}
+
+.tableContainer {
+    width: fit-content;
+    margin-left:auto;
+    margin-right:auto;
 }
 
 table {
@@ -14,6 +29,11 @@ table {
 
 th {
 	border: 1px, solid, black;
+    background-color: lightskyblue;
+}
+
+tr {
+    background-color: white;
 }
 
 td {

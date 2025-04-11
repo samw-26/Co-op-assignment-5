@@ -1,4 +1,4 @@
-<h1>{{title}}</h1>
+<h1 class="banner">{{title}}</h1>
 <form #recordForm="ngForm" (ngSubmit)="getSubmitInfo()?.submitFunction()">
 	<div class="error-container">
         @for (col of tableHeaders; track $index) {
@@ -11,7 +11,7 @@
 			</div>
         }
 	</div>
-	<div>
+	<div class="tableContainer">
 		<table>
 			<thead>
                 @for (header of tableHeaders; track $index) {
@@ -33,18 +33,19 @@
                                 [maxlength]="validators.getColMaxLength(col)"
                                 [required]="validators.isRequired(col)"
                                 [pattern]="validators.getPattern(col)"
-                                [duplicateKeyValidator]="col === tablePKey ? validators: null"
-                                [disabled]="col === tablePKey && currentTableType === TableType.Details">
+                                >
                             }
                         </td>
                     }
 				</tr>
 			</tbody>
 		</table>	
-	</div>
-	<div class="button-container">
-		<button mat-button routerLink="" type="button">Cancel</button>
-		<button mat-button type="submit" [disabled]="!recordForm.valid">{{getSubmitInfo()?.name}}</button>
-		<button mat-button type="button" class="del-btn" (click)="onDelete()" *ngIf="currentTableType === TableType.Details">Delete</button>
+        <div class="button-container">
+            <button mat-button routerLink="" type="button">Cancel</button>
+            <button mat-button type="submit" [disabled]="!recordForm.valid">{{getSubmitInfo()?.name}}</button>
+            <button mat-button type="button" class="del-btn" (click)="onDelete()" *ngIf="currentTableType === TableType.Details">Delete</button>
+        </div>
 	</div>
 </form>
+<!-- [disabled]="currentTableType === TableType.Details" tblservice.pKeys?.includes(col) &&  -->
+<!-- [duplicateKeyValidator]="tblservice.pKeys.includes(col) ? validators: null" -->

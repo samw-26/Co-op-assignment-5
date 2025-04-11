@@ -1,17 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, viewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { DuplicateKeyValidatorDirective, Validation } from '../validation';
-import { authors_columns, CheckConstraint, Schema, SubmitInfo } from '../interfaces';
-import { authors_placeholders } from '../../placeholders';
+import {/*  DuplicateKeyValidatorDirective, */ Validation } from '../validation';
+import { CheckConstraint, Schema, SubmitInfo } from '../interfaces';
 import { forkJoin, Observable } from 'rxjs';
 import { TableService } from '../table.service';
 import { MatDialog } from '@angular/material/dialog';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { pageNotFound } from '../app.routes';
 import { DeleteDialog } from '../details/delete.dialog.component';
 import { MatButton } from '@angular/material/button';
-import { HttpErrorResponse } from '@angular/common/http';
 
 export enum TableType {
 	Details = 'details',
@@ -20,7 +18,7 @@ export enum TableType {
 
 @Component({
   selector: 'app-record',
-  imports: [CommonModule, FormsModule, MatButton, RouterLink, DuplicateKeyValidatorDirective],
+  imports: [CommonModule, FormsModule, MatButton, RouterLink, /* DuplicateKeyValidatorDirective */],
   templateUrl: './record.component.html',
   styleUrl: './record.component.scss'
 })
@@ -36,14 +34,13 @@ export class RecordComponent {
 	}
 	tableInfo: Map<TableType, SubmitInfo> = new Map()
 
-
-	@Input() id!: string;
+    table!: string;
+	id!: string;
 	@Input({required: true}) title!: string;
 	@Input({required: true}) currentTableType!: TableType;
 
 	record: { [index: string]: any } = {};
 	tableHeaders: string[] = [];
-	tablePKey!: string;
 	tableSchema!: Schema[];
 	checkConstraints!: CheckConstraint[];
 
@@ -51,15 +48,19 @@ export class RecordComponent {
 	validators!: Validation;
 	//placeholders: authors_columns = authors_placeholders;
 	
-	constructor(private tblservice: TableService, private dialog: MatDialog, private router: Router) {
+	constructor(public tblservice: TableService, private dialog: MatDialog, private router: Router, private test: ActivatedRoute) {
 		this.tableInfo.set(TableType.Details, this.detailsSubmitInfo);
 		this.tableInfo.set(TableType.Insert, this.insertSubmitInfo);
 	}
 
 	ngOnInit() {
+        this.test.params.subscribe(params => {
+            this.id = params['id'];
+            this.tblservice.tableName = params['table'];
+        });
 		let observables: {[index: string]: Observable<any>} = {
 			table: this.tblservice.fetchTable(),
-			pkeys: this.tblservice.getPks(),
+			pKeys: this.tblservice.getPks(),
 			schema: this.tblservice.getSchema(),
 			checkConstraints: this.tblservice.getCheckConstraints()
 		}
@@ -70,12 +71,13 @@ export class RecordComponent {
                 this.tableSchema = schema;
                 this.tblservice.pKeys = pKeys;
                 this.checkConstraints = checkConstraints;
-                this.validators = new Validation(this.tableSchema, this.checkConstraints, this.recordForm(), {records: table, pKeys: this.tablePKey});
-                if (record) { // When updating
+                this.validators = new Validation(this.tableSchema, this.checkConstraints, this.recordForm(), {records: table, pKeys: this.tblservice.pKeys});
+                if (record) { // Details page
                     this.record = record;
                     this.tableHeaders = Object.keys(this.record);
+                    console.log('record:', this.record);
                 }
-                else { // When inserting
+                else { // Insert page
                     schema.forEach((c: Schema) => {
                         this.tableHeaders.push(c.COLUMN_NAME);
                     });
@@ -96,7 +98,7 @@ export class RecordComponent {
 	onUpdate(): void {
 		if (this.recordForm().valid) {
 			this.validators.correctDataTypes(this.record);
-			this.tblservice.updateRecord(this.id, this.record).subscribe({
+			this.tblservice.updateRecord(this.record).subscribe({
                 next: () => this.router.navigateByUrl(""),
                 error: e => console.error(e.error)
             });
@@ -104,16 +106,16 @@ export class RecordComponent {
 	}
 	
 	onDelete(): void {
-		const dialogRef = this.dialog.open(DeleteDialog, {
-			data: { id: this.record[this.tablePKey] }
-		});
-		dialogRef.afterClosed().subscribe(confirmed => {
-            if (confirmed) {
-                this.tblservice.deleteRecord(this.id).subscribe(() => {
-                    this.router.navigateByUrl("/");
-                });
-            }
-        });
+		// const dialogRef = this.dialog.open(DeleteDialog, {
+		// 	data: { id: this.record[this.tblservice.pKeys] }
+		// });
+		// dialogRef.afterClosed().subscribe(confirmed => {
+        //     if (confirmed) {
+        //         this.tblservice.deleteRecord(this.id).subscribe(() => {
+        //             this.router.navigateByUrl("/");
+        //         });
+        //     }
+        // });
 	}
 
 	onInsert(): void {
