@@ -3,7 +3,7 @@ import { Component, Input, viewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import {/*  DuplicateKeyValidatorDirective, */ Validation } from '../validation';
 import { CheckConstraint, Schema, SubmitInfo } from '../interfaces';
-import { forkJoin, Observable } from 'rxjs';
+import { forkJoin, Observable, lastValueFrom } from 'rxjs';
 import { TableService } from '../table.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -41,7 +41,6 @@ export class RecordComponent {
 
 	record: { [index: string]: any } = {};
     placeholders: { [index: string]: string } = {}
-    identities: { [index: string]: boolean} = {}
 	tableHeaders: string[] = [];
 	tableSchema!: Schema[];
 	checkConstraints!: CheckConstraint[];
@@ -70,24 +69,31 @@ export class RecordComponent {
                 this.checkConstraints = checkConstraints;
                 this.validators = new Validation(this.tableSchema, this.checkConstraints, this.recordForm(), {records: table, pKeys: pKeys});
                 if (record) { // Details page
-                    this.record = record;
-                    this.tableHeaders = Object.keys(this.record);
+                    let promises = [];
+                    for (let key in record) {
+                        promises.push(new Promise<void>(resolve => {
+                            this.tblservice.isIdentity(key).subscribe(identity => {
+                                if (identity) delete record[key];
+                                resolve();
+                            });
+                        }));
+                    }
+                    Promise.all(promises).then(() => {
+                        this.record = record;
+                        this.tableHeaders = Object.keys(record);
+                        this.tableHeaders.forEach(this.createPlaceHolder, this);
+                    });
                 }
                 else { // Insert page
                     schema.forEach((c: Schema) => {
-                        this.tableHeaders.push(c.COLUMN_NAME);
-                    });
-                    this.tableHeaders.forEach(col => {
-                        this.record[col] = '';
+                        this.tblservice.isIdentity(c.COLUMN_NAME).subscribe(identity => {
+                            if (!identity) this.tableHeaders.push(c.COLUMN_NAME);
+                            this.record[c.COLUMN_NAME] = null;
+                            this.createPlaceHolder(c.COLUMN_NAME);
+                        });
                     });
                 }
-                this.tableHeaders.forEach(col => {
-                    let pattern = this.validators.getPattern(col);
-                    this.placeholders[col] = pattern == this.validators.defaultPattern ? '' : randexp(pattern);
-                });
-                for (let col of this.tableHeaders) {
-                    this.tblservice.isIdentity(col).subscribe(res => this.identities[col] = res);
-                }
+                
 			},
 			error: e => console.error(e)
 		}
@@ -95,6 +101,12 @@ export class RecordComponent {
 	}
 
     
+    createPlaceHolder(col: string) {
+        this.tableHeaders.forEach(col => {
+            let pattern = this.validators.getPattern(col);
+            this.placeholders[col] = pattern == this.validators.defaultPattern ? '' : randexp(pattern);
+        });
+    }
 
 	getSubmitInfo(): SubmitInfo | undefined {
 		return this.tableInfo.get(this.currentTableType)

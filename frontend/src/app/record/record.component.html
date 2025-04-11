@@ -15,32 +15,28 @@
 		<table>
 			<thead>
                 @for (header of tableHeaders; track $index) {
-                    @if (!identities[header]) {
-                        <th>
-                            {{header}} <span class="error-msg">{{validators.isRequired(header) ? '*' : ''}}</span>
-                        </th>
-                    }
+                    <th>
+                        {{header}} <span class="error-msg">{{validators.isRequired(header) ? '*' : ''}}</span>
+                    </th>
                 }
 			</thead>
 			<tbody>
 				<tr>
                     @for (col of tableHeaders; track $index) {
-                        @if (!identities[col]) {
-                            <td class="field-container">
-                                @if (validators.getColumnSchema(col)?.DATA_TYPE === 'bit') {
-                                    <input type="checkbox" [(ngModel)]="record[col]" name={{col}}>
-                                }
-                                @else {
-                                    <input type='text' [(ngModel)]="record[col]" name={{col}}
-                                    [minlength]="validators.getColMinLength(col)"
-                                    [maxlength]="validators.getColMaxLength(col)"
-                                    [required]="validators.isRequired(col)"
-                                    [pattern]="validators.getPattern(col)"
-                                    [placeholder]="placeholders[col]"
-                                    >
-                                }
-                            </td>
-                        }
+                        <td class="field-container">
+                            @if (validators.getColumnSchema(col)?.DATA_TYPE === 'bit') {
+                                <input type="checkbox" [(ngModel)]="record[col]" name={{col}}>
+                            }
+                            @else {
+                                <input type='text' [(ngModel)]="record[col]" name={{col}}
+                                [minlength]="validators.getColMinLength(col)"
+                                [maxlength]="validators.getColMaxLength(col)"
+                                [required]="validators.isRequired(col)"
+                                [pattern]="validators.getPattern(col)"
+                                [placeholder]="placeholders[col]"
+                                >
+                            }
+                        </td>
                     }
 				</tr>
 			</tbody>
