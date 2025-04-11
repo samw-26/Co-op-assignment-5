@@ -35,10 +35,8 @@ export class Validation {
 
 	getColMaxLength(column: string): number | null {
 		const schema = this.getColumnSchema(column);
-		if (schema?.DATA_TYPE === 'bit') {
-			return 5; // false is 5 characters
-		}
-		return schema?.CHARACTER_MAXIMUM_LENGTH ?? null;
+        if (!schema || schema.CHARACTER_MAXIMUM_LENGTH < 0) return null;
+		return schema.CHARACTER_MAXIMUM_LENGTH;
 	}
 
 

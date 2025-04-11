@@ -6,7 +6,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
     margin: 0px;
     padding-bottom:10px;
     padding-top:10px;
-    border-bottom: solid 2px black;
+    border-style: solid none;
+    border-width: 2px;
+    border-color: black;
     text-align: center;
 }
 

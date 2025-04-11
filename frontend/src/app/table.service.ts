@@ -42,6 +42,11 @@ export class TableService {
 		return this.http.get<Schema[]>(`${this.apiurl}/${this.tableName}/schema`);
 	}
 
+    isIdentity(col: string): Observable<boolean> {
+        return this.http.get<{Column0: number}[]>(`${this.apiurl}/${this.tableName}/isIdentity/${col}`).pipe(map(res => {
+            return Boolean(Object.values(res)[0].Column0);
+        }))
+    }
 
 	getCheckConstraints(): Observable<CheckConstraint[]> {
 		return this.http.get<CheckConstraint[]>(`${this.apiurl}/${this.tableName}/ck`);

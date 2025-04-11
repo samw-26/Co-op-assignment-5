@@ -41,6 +41,7 @@ export class RecordComponent {
 
 	record: { [index: string]: any } = {};
     placeholders: { [index: string]: string } = {}
+    identities: { [index: string]: boolean} = {}
 	tableHeaders: string[] = [];
 	tableSchema!: Schema[];
 	checkConstraints!: CheckConstraint[];
@@ -77,13 +78,16 @@ export class RecordComponent {
                         this.tableHeaders.push(c.COLUMN_NAME);
                     });
                     this.tableHeaders.forEach(col => {
-                        this.record[col] = null;
+                        this.record[col] = '';
                     });
                 }
                 this.tableHeaders.forEach(col => {
                     let pattern = this.validators.getPattern(col);
                     this.placeholders[col] = pattern == this.validators.defaultPattern ? '' : randexp(pattern);
                 });
+                for (let col of this.tableHeaders) {
+                    this.tblservice.isIdentity(col).subscribe(res => this.identities[col] = res);
+                }
 			},
 			error: e => console.error(e)
 		}

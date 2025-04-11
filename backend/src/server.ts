@@ -121,6 +121,14 @@ app.get("/api/:table/schema", (req: express.Request, res: express.Response) => {
 
 
 /**
+ * Returns [ { Column0: 1 } ] if column is an identity column, [ { Column0: 0 } ] if not.
+ */
+app.get("/api/:table/isIdentity/:col", (req: express.Request, res: express.Response) => {
+	let queryStr = SqlString.format("SELECT columnproperty(object_id(?), ?, 'IsIdentity')", [req.params.table, req.params.col]);
+	sqlQueryWrapper(req, res, queryStr);
+});
+
+/**
  * Route for getting table check constraints.
  * Check constraint in format: CK__<table name>__<column name>...
  */
