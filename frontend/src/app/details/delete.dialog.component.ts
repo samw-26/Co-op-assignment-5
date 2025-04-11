@@ -1,9 +1,9 @@
 import { Component, inject, Inject, viewChild } from '@angular/core';
-import {MatDialogModule, MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
-import { AbstractControl, FormControl, FormsModule, NgForm, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 @Component({

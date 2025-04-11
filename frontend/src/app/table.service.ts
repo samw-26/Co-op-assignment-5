@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { CheckConstraint, PrimaryKey, Schema, ServerResponse, table } from './interfaces';
 
@@ -9,7 +9,6 @@ import { CheckConstraint, PrimaryKey, Schema, ServerResponse, table } from './in
 export class TableService {
 	private readonly apiurl = "http://localhost:5000/api"
     tableName: string = '';
-    pKeys: string[] = [];
 	constructor(private http: HttpClient) {}
 
 
@@ -22,8 +21,8 @@ export class TableService {
 	}
 
 
-	getRecord(id: string): Observable<{ [index: string]: string } | null> {
-		return this.http.get<{ [index: string]: string }[]>(`${this.apiurl}/${this.tableName}/${id}`, {observe: "response"})
+	getRecord(ids: {[index:string]:string}): Observable<{ [index: string]: string } | null> {
+		return this.http.get<{ [index: string]: string }[]>(`${this.apiurl}/${this.tableName}`, {params: new HttpParams({fromObject: ids}), observe: "response"})
 		.pipe(map((res: HttpResponse<{ [index: string]: string }[]>) => res.body ? res.body[0] : null))
 	}
 
@@ -49,8 +48,8 @@ export class TableService {
 	}
 
 
-	updateRecord(id: string, data: { [index: string]: string }): Observable<ServerResponse> {
-		return this.http.put<ServerResponse>(`${this.apiurl}/${this.tableName}/${id}`, data);
+	updateRecord(ids: {[index:string]:string}, data: { [index: string]: string }): Observable<ServerResponse> {
+		return this.http.put<ServerResponse>(`${this.apiurl}/${this.tableName}`, data, {params: new HttpParams({fromObject: ids})});
 	}
 
 
@@ -59,7 +58,7 @@ export class TableService {
 	}
 
 
-	deleteRecord(id: string): Observable<ServerResponse> {
-		return this.http.delete<ServerResponse>(`${this.apiurl}/${this.tableName}/${id}`);
+	deleteRecord(ids: {[index:string]:string}): Observable<ServerResponse> {
+		return this.http.delete<ServerResponse>(`${this.apiurl}/${this.tableName}`, {params: new HttpParams({fromObject: ids})});
 	}
 }

@@ -18,17 +18,29 @@ export class TableComponent {
 	tableNameSelect = new FormControl('');
 	tableRows!: { [index: string]: string }[];
 	tableHeaders!: string[];
+    pKeys: string[] = [];
 
 	constructor(public tblservice: TableService) {}
 
     getRecordRoute(row: { [index: string]: string }): string {
         let route: string = `${this.tblservice.tableName}/`;
         Object.entries(row).forEach(col => {
-            if (this.tblservice.pKeys.includes(col[0])) {
-                route += route.endsWith('/') ? `${col[1]}` : `+${col[1]}`;
+            if (this.pKeys.includes(col[0])) {
+                route += route.endsWith('/') ? '?' : '&';
+                route += `${col[0]}=${col[1]}`;
             }
         });
         return route;
+    }
+
+    getQueryParams(row: { [index: string]: string }): {[index: string]: string} {
+        let params: {[index: string]: string} = {};
+        Object.entries(row).forEach(col => {
+            if (this.pKeys.includes(col[0])) {
+                params[col[0]] = col[1];
+            }
+        });
+        return params;
     }
 
     selectValidator(): ValidatorFn {
@@ -51,7 +63,7 @@ export class TableComponent {
             next: ({rows, pkeys}) => {
                 this.tableHeaders = Object.keys(rows[0]);
                 this.tableRows = rows;
-                this.tblservice.pKeys = pkeys;
+                this.pKeys = pkeys;
             },
             error: (e) => {
                 Promise.reject(e);

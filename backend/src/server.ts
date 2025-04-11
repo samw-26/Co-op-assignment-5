@@ -1,5 +1,6 @@
 import sql from 'msnodesqlv8';
 import express from 'express'
+import {Query} from 'express-serve-static-core'
 import cors from 'cors'
 import SqlString from 'tsqlstring';
 import {ServerResponse, PrimaryKey} from '@frontend/app/interfaces'
@@ -63,14 +64,13 @@ async function getPrimaryKeys(table: string) {
 }
 
 
-async function addQueryConditions(table:string, id: string, baseQuery: string) {
+async function addQueryConditions(table:string, ids: Query, baseQuery: string) {
     let queryStr = baseQuery;
-    let pKeyValues = id.split("+");
-    let pKeys: string[] = await getPrimaryKeys(table);
-    if (pKeyValues.length !== pKeys.length) throw new Error(`Unexpected number of primary keys, received ${pKeyValues.length}, expected ${pKeys.length}`);
-    for (let i=0; i < pKeyValues.length; i++) {
-        if (i === 0) queryStr += SqlString.format(" WHERE ??=?", [pKeys[i], pKeyValues[i]]);
-        else queryStr += SqlString.format(" AND ?? = ?", [pKeys[i], pKeyValues[i]])
+    let counter = 0;
+    for (let id in ids) {
+        let clause = (counter === 0) ? " WHERE ??=?" : " AND ?? = ?";
+        queryStr +=  SqlString.format(clause, [id, ids[id]]);
+        counter++;
     }
     return queryStr;
 }
@@ -133,10 +133,10 @@ app.get("/api/:table/ck", (req: express.Request, res: express.Response) => {
 /**
  * Route for getting entire table or record. For records with multiple primary keys, separate primary keys with '+'
  */
-app.get("/api/:table/:id?", async (req: express.Request, res: express.Response) => {
+app.get("/api/:table", async (req: express.Request, res: express.Response) => {
 	let queryStr: string = SqlString.format("SELECT * FROM ??", [req.params.table]);
-	if (req.params.id) {
-        queryStr = await addQueryConditions(req.params.table, req.params.id, queryStr);
+	if (Object.keys(req.query).length) {
+        queryStr = await addQueryConditions(req.params.table, req.query, queryStr);
 	}
     sqlQueryWrapper(req, res, queryStr);
 });
@@ -145,9 +145,10 @@ app.get("/api/:table/:id?", async (req: express.Request, res: express.Response) 
 /**
  * Route for updating record. Request body contains entire updated record.
  */
-app.put("/api/:table/:id", async (req: express.Request, res: express.Response) => {
+app.put("/api/:table", async (req: express.Request, res: express.Response) => {
+    if (!Object.keys(req.query).length) throw new Error("Query parameters not specified");
 	let queryStr = SqlString.format("UPDATE ?? SET ?", [req.params.table, req.body]);
-    queryStr = await addQueryConditions(req.params.table, req.params.id, queryStr);
+    queryStr = await addQueryConditions(req.params.table, req.query, queryStr);
 	sqlQueryWrapper(req, res, queryStr);
 });
 
@@ -164,9 +165,10 @@ app.post("/api/:table/insert", (req: express.Request, res: express.Response) => 
 /**
  * Route for deleting record.
  */
-app.delete("/api/:table/:id", async (req: express.Request, res: express.Response) => {
+app.delete("/api/:table", async (req: express.Request, res: express.Response) => {
+    if (!Object.keys(req.query).length) throw new Error("Query parameters not specified");
 	let queryStr = SqlString.format("DELETE FROM ??", [req.params.table]);
-    queryStr = await addQueryConditions(req.params.table, req.params.id, queryStr);
+    queryStr = await addQueryConditions(req.params.table, req.query, queryStr);
 	sqlQueryWrapper(req, res, queryStr);
 });
 
