@@ -87,9 +87,11 @@ export class RecordComponent {
                 else { // Insert page
                     schema.forEach((c: Schema) => {
                         this.tblservice.isIdentity(c.COLUMN_NAME).subscribe(identity => {
-                            if (!identity) this.tableHeaders.push(c.COLUMN_NAME);
-                            this.record[c.COLUMN_NAME] = null;
-                            this.createPlaceHolder(c.COLUMN_NAME);
+                            if (!identity) {
+                                this.tableHeaders.push(c.COLUMN_NAME);
+                                this.record[c.COLUMN_NAME] = null;
+                                this.createPlaceHolder(c.COLUMN_NAME);
+                            }
                         });
                     });
                 }

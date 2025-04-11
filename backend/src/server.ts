@@ -165,7 +165,7 @@ app.put("/api/:table", async (req: express.Request, res: express.Response) => {
  * Route for inserting record. Request body contains new record.
  */
 app.post("/api/:table/insert", (req: express.Request, res: express.Response) => {
-	let queryStr = SqlString.format("INSERT INTO ?? VALUES (?)", [req.params.table, Object.values(req.body)]);
+	let queryStr = SqlString.format("INSERT INTO ?? (??) VALUES (?)", [req.params.table, Object.keys(req.body), Object.values(req.body)]);
 	sqlQueryWrapper(req, res, queryStr);
 });
 
