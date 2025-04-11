@@ -7,9 +7,9 @@ import { forkJoin, Observable } from 'rxjs';
 import { TableService } from '../table.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { pageNotFound } from '../app.routes';
 import { DeleteDialog } from '../details/delete.dialog.component';
 import { MatButton } from '@angular/material/button';
+import { randexp } from 'randexp';
 
 export enum TableType {
 	Details = 'details',
@@ -40,14 +40,13 @@ export class RecordComponent {
 	@Input({required: true}) currentTableType!: TableType;
 
 	record: { [index: string]: any } = {};
+    placeholders: { [index: string]: string } = {}
 	tableHeaders: string[] = [];
 	tableSchema!: Schema[];
 	checkConstraints!: CheckConstraint[];
-
 	recordForm = viewChild.required<NgForm>("recordForm");
 	validators!: Validation;
-	//placeholders: authors_columns = authors_placeholders;
-	
+
 	constructor(public tblservice: TableService, private dialog: MatDialog, private router: Router, private routeParams: ActivatedRoute) {
 		this.tableInfo.set(TableType.Details, this.detailsSubmitInfo);
 		this.tableInfo.set(TableType.Insert, this.insertSubmitInfo);
@@ -81,11 +80,17 @@ export class RecordComponent {
                         this.record[col] = null;
                     });
                 }
+                this.tableHeaders.forEach(col => {
+                    let pattern = this.validators.getPattern(col);
+                    this.placeholders[col] = pattern == this.validators.defaultPattern ? '' : randexp(pattern);
+                });
 			},
 			error: e => console.error(e)
 		}
 		);	
 	}
+
+    
 
 	getSubmitInfo(): SubmitInfo | undefined {
 		return this.tableInfo.get(this.currentTableType)

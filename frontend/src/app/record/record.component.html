@@ -33,6 +33,7 @@
                                 [maxlength]="validators.getColMaxLength(col)"
                                 [required]="validators.isRequired(col)"
                                 [pattern]="validators.getPattern(col)"
+                                [placeholder]="placeholders[col]"
                                 >
                             }
                         </td>
