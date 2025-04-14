@@ -145,7 +145,7 @@ export class RecordComponent {
 
 	onInsert(): void {
 		if (this.recordForm().valid) {
-			this.validators.correctDataTypes(this.record);
+			this.validators.correctDataTypes(this.record.data[0]);
 			this.tblservice.insertRecord(this.record.data[0]).subscribe({
 				next: () => this.router.navigateByUrl(""),
 				error: e => console.error(e.error)

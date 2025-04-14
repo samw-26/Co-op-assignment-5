@@ -13,18 +13,15 @@ export class Validation {
 	
     readonly defaultPattern = /^\S(.*\S)?$/
 
-
-	private convertToNull(record: { [index: string]: any }) {
-		for (let col in record) {
+	correctDataTypes(record: { [index: string]: any }) {
+        for (let col in record) {
 			if (typeof record[col] === 'string' && record[col].trim() === '') {
 				record[col] = null;
 			}
+            else if (this.getColumnSchema(col)?.DATA_TYPE === 'bit' && record[col] === null) {
+                record[col] = false;
+            }
 		}
-	}
-
-
-	correctDataTypes(record: { [index: string]: any }) {
-		this.convertToNull(record);
 	}
 
 
