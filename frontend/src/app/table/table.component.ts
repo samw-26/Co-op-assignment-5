@@ -1,4 +1,4 @@
-import { Component, ViewChild, viewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { CommonModule} from '@angular/common';
 import { TableService } from '../table.service';
 import { RouterLink } from '@angular/router';
@@ -6,12 +6,13 @@ import { forkJoin } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import {MatTable, MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import {MatSort, MatSortHeader, MatSortModule} from '@angular/material/sort';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 
 @Component({
 	selector: 'app-table',
-	imports: [CommonModule, RouterLink, MatButtonModule, ReactiveFormsModule, MatTableModule, MatPaginatorModule],
+	imports: [CommonModule, RouterLink, MatButtonModule, ReactiveFormsModule, MatTableModule, MatPaginatorModule, MatSortModule],
 	templateUrl: './table.component.html',
 	styleUrl: './table.component.scss'
 })
@@ -25,6 +26,7 @@ export class TableComponent {
 
     @ViewChild(MatTable) table!: MatTable<{[index: string]: any}>;
     @ViewChild(MatPaginator) paginator!: MatPaginator;
+    @ViewChild(MatSort) sort!: MatSort;
 
 	constructor(public tblservice: TableService) {}
 
@@ -54,6 +56,7 @@ export class TableComponent {
 
     ngAfterViewInit() {
         this.filteredRows.paginator = this.paginator;
+        this.filteredRows.sort = this.sort;
     }
 
     filterRows(target: EventTarget | null) {
