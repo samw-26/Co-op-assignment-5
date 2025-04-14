@@ -85,12 +85,15 @@ export class RecordComponent {
                     });
                 }
                 else { // Insert page
-                    schema.forEach((c: Schema) => {
-                        this.tblservice.isIdentity(c.COLUMN_NAME).subscribe(identity => {
-                            if (!identity) {
-                                this.tableHeaders.push(c.COLUMN_NAME);
-                                this.record[c.COLUMN_NAME] = null;
-                                this.createPlaceHolder(c.COLUMN_NAME);
+                    this.tableHeaders = schema.map((e: Schema) => e.COLUMN_NAME);
+                    this.tableHeaders.forEach(e => {
+                        this.tblservice.isIdentity(e).subscribe(identity => {
+                            if (identity) {
+                                this.tableHeaders.splice(this.tableHeaders.findIndex(x=>x===e), 1);
+                            }
+                            else {
+                                this.record[e] = null;
+                                this.createPlaceHolder(e);
                             }
                         });
                     });
@@ -104,10 +107,8 @@ export class RecordComponent {
 
     
     createPlaceHolder(col: string) {
-        this.tableHeaders.forEach(col => {
-            let pattern = this.validators.getPattern(col);
-            this.placeholders[col] = pattern == this.validators.defaultPattern ? '' : randexp(pattern);
-        });
+        let pattern = this.validators.getPattern(col);
+        this.placeholders[col] = pattern == this.validators.defaultPattern ? '' : randexp(pattern);
     }
 
 	getSubmitInfo(): SubmitInfo | undefined {
