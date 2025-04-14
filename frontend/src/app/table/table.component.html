@@ -1,17 +1,21 @@
 <h1 class="banner">Database Editor</h1>
 @if (tableRows) {
-    <div class="tableContainer">
-        <div id="tableContainerHeader">
-            <div>
-                <label for="tableSelect"><strong>Table:</strong></label>
-                <select id="tableSelect" [formControl]="tableNameSelect" (change)="onTableChange()">
-                    @for (table of tables; track $index) {
-                        <option value={{table}}>{{table}}</option>
-                    }
-                </select>
-            </div>
-            <button id="insertBtn" mat-raised-button [routerLink]="tblservice.tableName + '/insert'">Insert</button>
+    <div id="headerContainer">
+        <div>
+            <label for="tableSelect"><strong>Table:</strong></label>
+            <select id="tableSelect" class="headerInputs" [formControl]="tableNameSelect" (change)="onTableChange()">
+                @for (table of tables; track $index) {
+                    <option value={{table}}>{{table}}</option>
+                }
+            </select>
         </div>
+        <div>
+            <label for="filterInput"><strong>Filter:</strong></label>
+            <input id="filterInput" class="headerInputs" type="text" (input)="filterRows($event.target)">
+        </div>
+        <button id="insertBtn" mat-raised-button [routerLink]="tblservice.tableName + '/insert'">Insert</button>
+    </div>
+    <div class="tableContainer">
             <table>
                 <thead>
                 @for (header of tableHeaders; track $index) {
@@ -19,7 +23,7 @@
                 }
                 </thead>
                 <tbody>
-                @for (row of tableRows; track $index) {
+                @for (row of filteredRows; track $index) {
                     <tr [routerLink]="tblservice.tableName + '/details'" [queryParams]="getQueryParams(row)">
                         @for (col of tableHeaders; track $index) {
                             <td title={{row[col]}}>{{row[col] ? row[col].length > 30 ? row[col].slice(0, 27) + "..." : row[col] : row[col]}}</td>

@@ -17,10 +17,26 @@ export class TableComponent {
     tables: string[] = [];
 	tableNameSelect = new FormControl('');
 	tableRows!: { [index: string]: string }[];
+    filteredRows!: { [index: string]: string }[];
 	tableHeaders!: string[];
     pKeys: string[] = [];
 
 	constructor(public tblservice: TableService) {}
+
+    filterRows(target: EventTarget | null) {
+        if (!target) return;
+        let input = target as HTMLInputElement;
+        let query = input.value;
+        if (query === '') {this.filteredRows = this.tableRows; return}
+        this.filteredRows = this.tableRows.filter((row) => {
+            for (let colVal of Object.values(row)) {
+                if (colVal === null) continue;
+                colVal=String(colVal);
+                if (colVal.toLowerCase().includes(query.toLowerCase())) return true;
+            }
+            return false;
+        });
+    }
 
     getRecordRoute(row: { [index: string]: string }): string {
         let route: string = `${this.tblservice.tableName}/`;
@@ -62,7 +78,7 @@ export class TableComponent {
         }).subscribe({
             next: ({rows, pkeys}) => {
                 this.tableHeaders = Object.keys(rows[0]);
-                this.tableRows = rows;
+                this.tableRows = this.filteredRows = rows;
                 this.pKeys = pkeys;
             },
             error: (e) => {
