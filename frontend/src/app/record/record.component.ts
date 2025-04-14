@@ -69,7 +69,7 @@ export class RecordComponent {
                 this.checkConstraints = checkConstraints;
                 this.validators = new Validation(this.tableSchema, this.checkConstraints, this.recordForm(), {records: table, pKeys: pKeys});
                 if (record) { // Details page
-                    let promises = [];
+                    let promises: Promise<void>[] = [];
                     for (let key in record) {
                         promises.push(new Promise<void>(resolve => {
                             this.tblservice.isIdentity(key).subscribe(identity => {
@@ -85,18 +85,23 @@ export class RecordComponent {
                     });
                 }
                 else { // Insert page
-                    this.tableHeaders = schema.map((e: Schema) => e.COLUMN_NAME);
-                    this.tableHeaders.forEach(e => {
-                        this.tblservice.isIdentity(e).subscribe(identity => {
-                            if (identity) {
-                                this.tableHeaders.splice(this.tableHeaders.findIndex(x=>x===e), 1);
-                            }
-                            else {
-                                this.record[e] = null;
-                                this.createPlaceHolder(e);
-                            }
-                        });
+                    let tempHeaders = schema.map((e: Schema) => e.COLUMN_NAME);
+                    let promises: Promise<void>[] = [];
+                    tempHeaders.forEach((e: string) => {
+                        promises.push(new Promise<void>(resolve => {
+                            this.tblservice.isIdentity(e).subscribe(identity => {
+                                if (identity) {
+                                    tempHeaders.splice(tempHeaders.findIndex((x: string)=>x===e), 1);
+                                }
+                                else {
+                                    this.record[e] = null;
+                                    this.createPlaceHolder(e);
+                                }
+                                resolve();
+                            });
+                        }));
                     });
+                    Promise.all(promises).then(() => this.tableHeaders = tempHeaders);
                 }
                 
 			},
