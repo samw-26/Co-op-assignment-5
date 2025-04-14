@@ -10,9 +10,13 @@
     margin-left:10px;
 }
 
-tr:hover {
+[mat-table] {
+    white-space: nowrap;
+}
+
+[mat-row]:hover {
     cursor: pointer;
-    background-color: lightgrey;
+    background-color: lightgrey !important;
 }
 
 label {

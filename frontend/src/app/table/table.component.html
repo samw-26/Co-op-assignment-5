@@ -1,5 +1,5 @@
 <h1 class="banner">Database Editor</h1>
-@if (tableRows) {
+
     <div id="headerContainer">
         <div>
             <label for="tableSelect"><strong>Table:</strong></label>
@@ -16,21 +16,21 @@
         <button id="insertBtn" mat-raised-button [routerLink]="tblservice.tableName + '/insert'">Insert</button>
     </div>
     <div class="tableContainer">
-            <table>
-                <thead>
-                @for (header of tableHeaders; track $index) {
-                    <th>{{header}}</th>
+            <table mat-table [dataSource]="filteredRows">
+                @for (c of tableHeaders; track $index) {
+                    <ng-container matColumnDef={{c}}>
+                        <th mat-header-cell *matHeaderCellDef> {{c}} </th>
+                        <td mat-cell *matCellDef="let row"
+                        title={{row[c]}}>{{row[c] ? row[c].length > 50 ? row[c].slice(0, 47) + "..." : row[c] : row[c]}}</td>
+                    </ng-container>
                 }
-                </thead>
-                <tbody>
-                @for (row of filteredRows; track $index) {
-                    <tr [routerLink]="tblservice.tableName + '/details'" [queryParams]="getQueryParams(row)">
-                        @for (col of tableHeaders; track $index) {
-                            <td title={{row[col]}}>{{row[col] ? row[col].length > 30 ? row[col].slice(0, 27) + "..." : row[col] : row[col]}}</td>
-                        }
-                    </tr>
-                }
-                </tbody>
+                <tr mat-header-row *matHeaderRowDef="tableHeaders"></tr>
+                <tr mat-row *matRowDef="let row; columns: tableHeaders" 
+                [routerLink]="tblservice.tableName + '/details'" [queryParams]="getQueryParams(row)"></tr>
             </table>
+            <mat-paginator
+            [pageSize]="10"
+            [pageSizeOptions]="[5,10,15,20,50]"
+            showFirstLastButtons>
+            </mat-paginator>
     </div>
-}

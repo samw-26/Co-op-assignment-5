@@ -1,16 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, viewChild } from '@angular/core';
 import { CommonModule} from '@angular/common';
 import { TableService } from '../table.service';
 import { RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
-import {MatTableModule} from '@angular/material/table';
+import {MatTable, MatTableDataSource, MatTableModule} from '@angular/material/table';
+import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 
 @Component({
 	selector: 'app-table',
-	imports: [CommonModule, RouterLink, MatButtonModule, ReactiveFormsModule, MatTableModule],
+	imports: [CommonModule, RouterLink, MatButtonModule, ReactiveFormsModule, MatTableModule, MatPaginatorModule],
 	templateUrl: './table.component.html',
 	styleUrl: './table.component.scss'
 })
@@ -18,70 +19,16 @@ export class TableComponent {
     tables: string[] = [];
 	tableNameSelect = new FormControl('');
 	tableRows!: { [index: string]: string }[];
-    filteredRows!: { [index: string]: string }[];
+    filteredRows = new MatTableDataSource<{[index: string]: any}>([]);
 	tableHeaders!: string[];
     pKeys: string[] = [];
 
+    @ViewChild(MatTable) table!: MatTable<{[index: string]: any}>;
+    @ViewChild(MatPaginator) paginator!: MatPaginator;
+
 	constructor(public tblservice: TableService) {}
 
-    filterRows(target: EventTarget | null) {
-        if (!target) return;
-        let input = target as HTMLInputElement;
-        let query = input.value;
-        if (query === '') {this.filteredRows = this.tableRows; return}
-        this.filteredRows = this.tableRows.filter((row) => {
-            for (let colVal of Object.values(row)) {
-                if (colVal === null) continue;
-                colVal=String(colVal);
-                if (colVal.toLowerCase().includes(query.toLowerCase())) return true;
-            }
-            return false;
-        });
-    }
-
-    getRecordRoute(row: { [index: string]: string }): string {
-        let route: string = `${this.tblservice.tableName}/`;
-        Object.entries(row).forEach(col => {
-            if (this.pKeys.includes(col[0])) {
-                route += route.endsWith('/') ? '?' : '&';
-                route += `${col[0]}=${col[1]}`;
-            }
-        });
-        return route;
-    }
-
-    getQueryParams(row: { [index: string]: string }): {[index: string]: string} {
-        let params: {[index: string]: string} = {};
-        Object.entries(row).forEach(col => {
-            if (this.pKeys.includes(col[0])) {
-                params[col[0]] = col[1];
-            }
-        });
-        return params;
-    }
-
-    onTableChange() {
-        if (!this.tableNameSelect.valid) {console.log("not valid"); return;}
-        this.tblservice.tableName = this.tableNameSelect.value ?? '';
-        this.loadTable();
-    }
-
-    loadTable() {
-        forkJoin({
-            rows: this.tblservice.fetchTable(),
-            pkeys: this.tblservice.getPks(),
-        }).subscribe({
-            next: ({rows, pkeys}) => {
-                this.tableHeaders = Object.keys(rows[0]);
-                this.tableRows = this.filteredRows = rows;
-                this.pKeys = pkeys;
-            },
-            error: (e) => {
-                Promise.reject(e);
-            }
-        });
-    }
-
+    
 	async ngOnInit() {
         await new Promise<void>((resolve, reject) => {
             this.tblservice.getTables().subscribe({
@@ -104,5 +51,67 @@ export class TableComponent {
             console.error(e);
         });
 	}
+
+    ngAfterViewInit() {
+        this.filteredRows.paginator = this.paginator;
+    }
+
+    filterRows(target: EventTarget | null) {
+        if (!target) return;
+        let input = target as HTMLInputElement;
+        let query = input.value;
+        if (query === '') {this.filteredRows.data = this.tableRows; return}
+        this.filteredRows.data = this.tableRows.filter((row) => {
+            for (let colVal of Object.values(row)) {
+                if (colVal === null) continue;
+                colVal=String(colVal);
+                if (colVal.toLowerCase().includes(query.toLowerCase())) return true;
+            }
+            return false;
+        });
+    }
+    
+    getRecordRoute(row: { [index: string]: string }): string {
+        let route: string = `${this.tblservice.tableName}/`;
+        Object.entries(row).forEach(col => {
+            if (this.pKeys.includes(col[0])) {
+                route += route.endsWith('/') ? '?' : '&';
+                route += `${col[0]}=${col[1]}`;
+            }
+        });
+        return route;
+    }
+    
+    getQueryParams(row: { [index: string]: string }): {[index: string]: string} {
+        let params: {[index: string]: string} = {};
+        Object.entries(row).forEach(col => {
+            if (this.pKeys.includes(col[0])) {
+                params[col[0]] = col[1];
+            }
+        });
+        return params;
+    }
+    
+    onTableChange() {
+        if (!this.tableNameSelect.valid) {console.log("not valid"); return;}
+        this.tblservice.tableName = this.tableNameSelect.value ?? '';
+        this.loadTable();
+    }
+    
+    loadTable() {
+        forkJoin({
+            rows: this.tblservice.fetchTable(),
+            pkeys: this.tblservice.getPks(),
+        }).subscribe({
+            next: ({rows, pkeys}) => {
+                this.tableHeaders = Object.keys(rows[0]);
+                this.tableRows = this.filteredRows.data = rows;
+                this.pKeys = pkeys;
+            },
+            error: (e) => {
+                Promise.reject(e);
+            }
+        });
+    }
 }
 
