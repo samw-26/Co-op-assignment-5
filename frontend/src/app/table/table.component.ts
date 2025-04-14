@@ -4,12 +4,13 @@ import { TableService } from '../table.service';
 import { RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
-import { FormControl, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import {MatTableModule} from '@angular/material/table';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 
 @Component({
 	selector: 'app-table',
-	imports: [CommonModule, RouterLink, MatButtonModule, ReactiveFormsModule],
+	imports: [CommonModule, RouterLink, MatButtonModule, ReactiveFormsModule, MatTableModule],
 	templateUrl: './table.component.html',
 	styleUrl: './table.component.scss'
 })
@@ -57,12 +58,6 @@ export class TableComponent {
             }
         });
         return params;
-    }
-
-    selectValidator(): ValidatorFn {
-        return (): ValidationErrors | null => {
-            return this.tables.includes(this.tableNameSelect.value ?? '') ? null : {InvalidValue: {value: this.tableNameSelect.value}}; 
-        };
     }
 
     onTableChange() {
