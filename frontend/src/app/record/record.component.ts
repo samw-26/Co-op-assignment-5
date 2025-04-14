@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, viewChild } from '@angular/core';
+import { Component, Input, ViewChild, viewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import {/*  DuplicateKeyValidatorDirective, */ Validation } from '../validation';
 import { CheckConstraint, Schema, SubmitInfo } from '../interfaces';
-import { forkJoin, Observable, lastValueFrom } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { TableService } from '../table.service';
 import { MatDialog } from '@angular/material/dialog';
+import {MatTable, MatTableDataSource, MatTableModule} from '@angular/material/table';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DeleteDialog } from '../details/delete.dialog.component';
 import { MatButton } from '@angular/material/button';
@@ -18,7 +19,8 @@ export enum TableType {
 
 @Component({
   selector: 'app-record',
-  imports: [CommonModule, FormsModule, MatButton, RouterLink, /* DuplicateKeyValidatorDirective */],
+  imports: [CommonModule, FormsModule, MatButton, RouterLink, 
+            MatTableModule/* DuplicateKeyValidatorDirective */],
   templateUrl: './record.component.html',
   styleUrl: './record.component.scss'
 })
@@ -34,12 +36,12 @@ export class RecordComponent {
 	}
 	tableInfo: Map<TableType, SubmitInfo> = new Map()
 
-    table!: string;
     ids!: {[index: string]: string};
 	@Input({required: true}) title!: string;
 	@Input({required: true}) currentTableType!: TableType;
+    @ViewChild(MatTable) table!: MatTable<{[index: string]: any}>;
 
-	record: { [index: string]: any } = {};
+	record = new MatTableDataSource<{[index: string]: any}>([{}]);
     placeholders: { [index: string]: string } = {}
 	tableHeaders: string[] = [];
 	tableSchema!: Schema[];
@@ -79,7 +81,7 @@ export class RecordComponent {
                         }));
                     }
                     Promise.all(promises).then(() => {
-                        this.record = record;
+                        this.record.data[0] = record;
                         this.tableHeaders = Object.keys(record);
                         this.tableHeaders.forEach(this.createPlaceHolder, this);
                     });
@@ -94,7 +96,7 @@ export class RecordComponent {
                                     tempHeaders.splice(tempHeaders.findIndex((x: string)=>x===e), 1);
                                 }
                                 else {
-                                    this.record[e] = null;
+                                    this.record.data[0][e] = null;
                                     this.createPlaceHolder(e);
                                 }
                                 resolve();
@@ -123,7 +125,7 @@ export class RecordComponent {
 	onUpdate(): void {
 		if (this.recordForm().valid) {
 			this.validators.correctDataTypes(this.record);
-			this.tblservice.updateRecord(this.ids, this.record).subscribe({
+			this.tblservice.updateRecord(this.ids, this.record.data[0]).subscribe({
                 next: () => this.router.navigateByUrl(""),
                 error: e => console.error(e.error)
             });
@@ -144,7 +146,7 @@ export class RecordComponent {
 	onInsert(): void {
 		if (this.recordForm().valid) {
 			this.validators.correctDataTypes(this.record);
-			this.tblservice.insertRecord(this.record).subscribe({
+			this.tblservice.insertRecord(this.record.data[0]).subscribe({
 				next: () => this.router.navigateByUrl(""),
 				error: e => console.error(e.error)
 			});

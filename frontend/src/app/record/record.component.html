@@ -12,35 +12,29 @@
         }
 	</div>
 	<div class="tableContainer">
-		<table>
-			<thead>
-                @for (header of tableHeaders; track $index) {
-                    <th>
-                        {{header}} <span class="error-msg">{{validators.isRequired(header) ? '*' : ''}}</span>
-                    </th>
-                }
-			</thead>
-			<tbody>
-				<tr>
-                    @for (col of tableHeaders; track $index) {
-                        <td class="field-container">
-                            @if (validators.getColumnSchema(col)?.DATA_TYPE === 'bit') {
-                                <input type="checkbox" [(ngModel)]="record[col]" name={{col}}>
-                            }
-                            @else {
-                                <input type='text' [(ngModel)]="record[col]" name={{col}}
-                                [minlength]="validators.getColMinLength(col)"
-                                [maxlength]="validators.getColMaxLength(col)"
-                                [required]="validators.isRequired(col)"
-                                [pattern]="validators.getPattern(col)"
-                                [placeholder]="placeholders[col]"
-                                >
-                            }
-                        </td>
-                    }
-				</tr>
-			</tbody>
-		</table>	
+        <table mat-table [dataSource]="record">
+            @for (c of tableHeaders; track $index) {
+                <ng-container matColumnDef={{c}}>
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>{{c}} <span class="error-msg">{{validators.isRequired(c) ? '*' : ''}}</span></th>
+                    <td mat-cell *matCellDef="let row">
+                        @if (validators.getColumnSchema(c)?.DATA_TYPE === 'bit') {
+                            <input type="checkbox" [(ngModel)]="row[c]" name={{c}}>
+                        }
+                        @else {
+                            <input type='text' [(ngModel)]="row[c]" name={{c}}
+                            [minlength]="validators.getColMinLength(c)"
+                            [maxlength]="validators.getColMaxLength(c)"
+                            [required]="validators.isRequired(c)"
+                            [pattern]="validators.getPattern(c)"
+                            [placeholder]="placeholders[c]"
+                            >
+                        }
+                    </td>
+                </ng-container>
+            }
+                <tr mat-header-row *matHeaderRowDef="tableHeaders"></tr>
+                <tr mat-row *matRowDef="let row; columns: tableHeaders"></tr>
+        </table>
         <div class="button-container">
             <button mat-button routerLink="" type="button">Cancel</button>
             <button mat-button type="submit" [disabled]="!recordForm.valid">{{getSubmitInfo()?.name}}</button>

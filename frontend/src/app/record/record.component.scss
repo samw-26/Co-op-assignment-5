@@ -7,6 +7,12 @@ button[mat-button].del-btn {
 	color: red;
 }
 
+input {
+	font-size: 1em;
+	width:8em;
+	text-align: center;
+}
+
 .error-container {
 	padding-bottom: 10px;
 }
@@ -14,6 +20,3 @@ button[mat-button].del-btn {
 .error-msg {
 	color: red;
 }
-
-
-

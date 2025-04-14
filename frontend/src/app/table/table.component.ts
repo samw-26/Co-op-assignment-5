@@ -6,7 +6,7 @@ import { forkJoin } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import {MatTable, MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
-import {MatSort, MatSortHeader, MatSortModule} from '@angular/material/sort';
+import {MatSort, MatSortModule} from '@angular/material/sort';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 

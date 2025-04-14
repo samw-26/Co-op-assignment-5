@@ -19,7 +19,7 @@
             <table mat-table [dataSource]="filteredRows" matSort>
                 @for (c of tableHeaders; track $index) {
                     <ng-container matColumnDef={{c}}>
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{c}} </th>
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{c}}</th>
                         <td mat-cell *matCellDef="let row"
                         title={{row[c]}}>{{row[c]}}</td>
                     </ng-container>
