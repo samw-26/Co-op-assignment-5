@@ -1,13 +1,17 @@
-@use '../node_modules/@angular/material' as mat;
+@use '@angular/material' as mat;
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-color: floralwhite; }
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    background-color: floralwhite;
+    height:100%;
+}
 
 .banner {
     background-color: lightskyblue;
     margin: 0px;
-    padding-bottom:10px;
-    padding-top:10px;
+    padding-bottom: 10px;
+    padding-top: 10px;
     border-style: solid none;
     border-width: 2px;
     border-color: black;
@@ -15,10 +19,11 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
 }
 
 a:visited {
-	color: blue;
+    color: blue;
 }
 
-.tableContainer, .button-container {
+.tableContainer,
+.button-container {
     width: 80%;
     margin-left: auto;
     margin-right: auto;
@@ -27,17 +32,23 @@ a:visited {
 }
 
 [mat-table] {
-	border-collapse: collapse;
+    border-collapse: collapse;
     white-space: nowrap !important;
 }
 
 
 :root {
-  @include mat.table-overrides((
-    row-item-outline-color: black,
-    row-item-outline-width: 1px,
-    background-color: white,
-  ));
+    @include mat.table-overrides((
+        row-item-outline-color: black,
+        row-item-outline-width: 1px,
+        background-color: white,
+    ));
+    @include mat.form-field-overrides((
+        container-height: 0px,
+        container-vertical-padding: 10px,
+        state-layer-color: red,
+        // focus-state-layer-opacity: 0.5,
+    ));
 }
 
 mat-paginator {
@@ -52,8 +63,7 @@ th {
 
 
 
-button[mat-button], button[mat-raised-button] {
+button[mat-button],
+button[mat-raised-button] {
     font-size: 1.2em;
 }
-
-

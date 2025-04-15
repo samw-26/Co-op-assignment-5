@@ -7,10 +7,30 @@ button[mat-button].del-btn {
 	color: red;
 }
 
-input {
-	font-size: 1em;
-	width:8em;
-	text-align: center;
+.tableContainer {
+    margin-top: 50px;
+}
+
+
+td {
+    text-align: center;
+    max-width: 150px;
+    padding: 0px 5px;
+}
+
+input[matInput] {
+    text-align:start;
+}
+
+mat-form-field {
+    font-size: 1em;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+mat-error {
+    white-space: wrap;
 }
 
 .error-container {

@@ -1,34 +1,27 @@
 <h1 class="banner">{{title}}</h1>
 <form #recordForm="ngForm" (ngSubmit)="getSubmitInfo()?.submitFunction()">
-	<div class="error-container">
-        @for (col of tableHeaders; track $index) {
-            <div [hidden]="recordForm.controls[col]?.valid || recordForm.controls[col]?.untouched">
-				<ng-container *ngIf="recordForm.controls[col]?.errors as errors">
-					<div class="error-msg">
-						{{col}}: {{validators.getErrorMsg(col)}}
-					</div>
-				</ng-container>
-			</div>
-        }
-	</div>
 	<div class="tableContainer">
-        <table mat-table [dataSource]="record">
+        <table mat-table [dataSource]="record" fixedLayout="true">
             @for (c of tableHeaders; track $index) {
                 <ng-container matColumnDef={{c}}>
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header>{{c}} <span class="error-msg">{{validators.isRequired(c) ? '*' : ''}}</span></th>
+                    <th id="{{c}}Label" mat-header-cell *matHeaderCellDef mat-sort-header>
+                        {{c}} <span class="error-msg">{{validators.isRequired(c) ? "*" : ""}}</span>
+                    </th>
                     <td mat-cell *matCellDef="let row">
-                        @if (validators.getColumnSchema(c)?.DATA_TYPE === 'bit') {
-                            <input type="checkbox" [(ngModel)]="row[c]" name={{c}}>
+                        @if (validators.getColumnSchema(c)?.DATA_TYPE === "bit") {
+                            <mat-checkbox aria-labelledby="{{c}}Label" [(ngModel)]="row[c]" name={{c}}></mat-checkbox>
                         }
                         @else {
-                            <input type='text' [(ngModel)]="row[c]" name={{c}}
-                            [minlength]="validators.getColMinLength(c)"
-                            [maxlength]="validators.getColMaxLength(c)"
-                            [required]="validators.isRequired(c)"
-                            [pattern]="validators.getPattern(c)"
-                            [placeholder]="placeholders[c]"
-                            >
-                        }
+                                <mat-form-field subscriptSizing="dynamic">
+                                    <input matInput attr.aria-labelledby="{{c}}Label" type="text" [(ngModel)]="row[c]" name={{c}}
+                                    [minlength]="validators.getColMinLength(c)"
+                                    [maxlength]="validators.getColMaxLength(c)"
+                                    [required]="validators.isRequired(c)"
+                                    [pattern]="validators.getPattern(c)"
+                                    >
+                                    <mat-error>{{validators?.getErrorMsg(c)}}</mat-error>
+                                </mat-form-field>
+                            }
                     </td>
                 </ng-container>
             }

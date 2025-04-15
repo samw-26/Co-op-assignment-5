@@ -1,16 +1,19 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, ViewChild, viewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import {/*  DuplicateKeyValidatorDirective, */ Validation } from '../validation';
+import { Validation } from '../validation';
 import { CheckConstraint, Schema, SubmitInfo } from '../interfaces';
 import { forkJoin, Observable } from 'rxjs';
 import { TableService } from '../table.service';
-import { MatDialog } from '@angular/material/dialog';
-import {MatTable, MatTableDataSource, MatTableModule} from '@angular/material/table';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DeleteDialog } from '../details/delete.dialog.component';
-import { MatButton } from '@angular/material/button';
 import { randexp } from 'randexp';
+import { MatDialog } from '@angular/material/dialog';
+import {MatTable, MatTableDataSource, MatTableModule} from '@angular/material/table';
+import { MatButton } from '@angular/material/button';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import { MatInputModule } from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
 
 export enum TableType {
 	Details = 'details',
@@ -20,7 +23,8 @@ export enum TableType {
 @Component({
   selector: 'app-record',
   imports: [CommonModule, FormsModule, MatButton, RouterLink, 
-            MatTableModule/* DuplicateKeyValidatorDirective */],
+            MatTableModule, MatInputModule, MatFormFieldModule,
+            MatCheckboxModule,],
   templateUrl: './record.component.html',
   styleUrl: './record.component.scss'
 })

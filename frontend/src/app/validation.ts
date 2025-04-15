@@ -76,6 +76,7 @@ export class Validation {
 	 * @returns String containing error msg.
 	 */
 	getErrorMsg(col: string): string {
+        if (!this.form.controls[col]) return '';
 		let errors = this.form.controls[col].errors;
 		if (!errors) return '';
 		if (errors['required']) {
@@ -85,7 +86,7 @@ export class Validation {
 			if (errors['pattern'].requiredPattern == this.defaultPattern) {
 				return 'Field cannot contain leading or trailing spaces.';
 			}
-			return `Does not match required format. ${this.getPattern(col)}`;
+			return `Incorrect format.`;
 		}
 		else if (errors['duplicateKey']) {
 			return 'Primary key already exists in table.';
