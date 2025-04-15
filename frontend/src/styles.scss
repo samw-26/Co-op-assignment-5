@@ -16,21 +16,21 @@ a:visited {
 	color: blue;
 }
 
-.tableContainer {
-    width: fit-content;
-    margin-left:auto;
-    margin-right:auto;
+.tableContainer, .button-container {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 
 [mat-table] {
-	overflow: auto;
-	white-space: nowrap;
 	border-collapse: collapse;
 }
 
 
 th {
-	border: 1px, solid, black;
+	border: 1px solid black;
     background-color: lightskyblue !important;
 }
 
