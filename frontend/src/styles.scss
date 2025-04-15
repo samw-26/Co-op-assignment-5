@@ -26,6 +26,12 @@ a:visited {
 
 [mat-table] {
 	border-collapse: collapse;
+    white-space: nowrap !important;
+}
+
+mat-paginator {
+    position: sticky;
+    left: 0px;
 }
 
 
