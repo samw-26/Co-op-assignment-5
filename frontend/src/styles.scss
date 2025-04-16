@@ -46,8 +46,6 @@ a:visited {
     @include mat.form-field-overrides((
         container-height: 0px,
         container-vertical-padding: 10px,
-        state-layer-color: red,
-        // focus-state-layer-opacity: 0.5,
     ));
 }
 
