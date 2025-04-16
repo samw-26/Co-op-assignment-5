@@ -14,6 +14,7 @@ import { MatButton } from '@angular/material/button';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
+import { HttpErrorResponse } from '@angular/common/http';
 
 export enum TableType {
 	Details = 'details',
@@ -52,6 +53,7 @@ export class RecordComponent {
 	checkConstraints!: CheckConstraint[];
 	recordForm = viewChild.required<NgForm>("recordForm");
 	validators!: Validation;
+    submitError: string = "";
 
 	constructor(public tblservice: TableService, private dialog: MatDialog, private router: Router, private routeParams: ActivatedRoute) {
 		this.tableInfo.set(TableType.Details, this.detailsSubmitInfo);
@@ -126,13 +128,27 @@ export class RecordComponent {
 		return this.tableInfo.get(this.currentTableType)
 	}
 
+    getErrorMsg(error: HttpErrorResponse): string {
+        let msg: string = error.error.message;
+        msg = msg.slice(msg.lastIndexOf("]")+1);
+        return msg;
+    }
+
+    subscribeHandler(): Object {
+        return {
+            next: () => this.router.navigateByUrl(""),
+            error: (e: HttpErrorResponse) => {
+                let msg = this.getErrorMsg(e);
+                this.submitError = msg;
+                console.error(msg);
+            },
+        };
+    }
+
 	onUpdate(): void {
 		if (this.recordForm().valid) {
 			this.validators.correctDataTypes(this.record);
-			this.tblservice.updateRecord(this.ids, this.record.data[0]).subscribe({
-                next: () => this.router.navigateByUrl(""),
-                error: e => console.error(e.error)
-            });
+			this.tblservice.updateRecord(this.ids, this.record.data[0]).subscribe(this.subscribeHandler());
 		}
 	}
 	
@@ -140,9 +156,7 @@ export class RecordComponent {
 		const dialogRef = this.dialog.open(DeleteDialog);
 		dialogRef.afterClosed().subscribe(confirmed => {
             if (confirmed) {
-                this.tblservice.deleteRecord(this.ids).subscribe(() => {
-                    this.router.navigateByUrl("/");
-                });
+                this.tblservice.deleteRecord(this.ids).subscribe(this.subscribeHandler());
             }
         });
 	}
@@ -150,10 +164,7 @@ export class RecordComponent {
 	onInsert(): void {
 		if (this.recordForm().valid) {
 			this.validators.correctDataTypes(this.record.data[0]);
-			this.tblservice.insertRecord(this.record.data[0]).subscribe({
-				next: () => this.router.navigateByUrl(""),
-				error: e => console.error(e.error)
-			});
+			this.tblservice.insertRecord(this.record.data[0]).subscribe(this.subscribeHandler());
 		}
 	}
 
