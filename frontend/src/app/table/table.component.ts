@@ -7,12 +7,18 @@ import { MatButtonModule } from '@angular/material/button';
 import {MatTable, MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import {MatSort, MatSortModule} from '@angular/material/sort';
+import {MatSelectModule} from '@angular/material/select';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
 
 
 @Component({
 	selector: 'app-table',
-	imports: [CommonModule, RouterLink, MatButtonModule, ReactiveFormsModule, MatTableModule, MatPaginatorModule, MatSortModule],
+	imports: [
+            CommonModule, RouterLink, MatButtonModule, 
+            ReactiveFormsModule, MatTableModule, MatPaginatorModule,
+            MatSortModule, MatSelectModule, MatInputModule
+        ],
 	templateUrl: './table.component.html',
 	styleUrl: './table.component.scss'
 })

@@ -14,7 +14,7 @@ export const routes: Routes = [
 	{
 		path: ":table/insert",
 		component: InsertComponent,
-		title: "Insert Record"
+		title: "Insert"
 	},
 	{
 		path: ":table/details",
@@ -24,7 +24,7 @@ export const routes: Routes = [
 	{
 		path: "",
 		component: TableComponent,
-		title: "Main",
+		title: "Database Editor",
 	},
 	{
 		path: "**",

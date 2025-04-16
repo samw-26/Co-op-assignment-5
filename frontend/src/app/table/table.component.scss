@@ -6,6 +6,14 @@
     overflow: auto;
 }
 
+#headerContainer mat-form-field {
+    margin-top: 20px;
+}
+
+mat-select {
+    padding: 0px;
+}
+
 .headerInputs {
     margin-left:10px;
 }
@@ -17,13 +25,4 @@
 
 label {
     font-size:1.2em;
-}
-
-select {
-    font-size:1.2em;
-    text-align:center;
-}
-
-#insertBtn {
-    margin-bottom: 10px;
 }

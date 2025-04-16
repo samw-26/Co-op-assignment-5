@@ -24,7 +24,7 @@ a:visited {
 
 .tableContainer,
 .button-container {
-    width: 80%;
+    width: 90%;
     margin-left: auto;
     margin-right: auto;
     overflow-x: auto;
@@ -32,8 +32,12 @@ a:visited {
 }
 
 [mat-table] {
+    width: 100%;
     border-collapse: collapse;
-    white-space: nowrap !important;
+}
+
+th {
+    background-color: lightskyblue !important;
 }
 
 
@@ -43,6 +47,18 @@ a:visited {
         row-item-outline-width: 1px,
         background-color: white,
     ));
+}
+
+app-table {
+    @include mat.form-field-overrides((
+        filled-container-color: white,
+    ));
+    @include mat.button-overrides((
+        protected-container-color: white,
+    ));
+}
+
+app-record {
     @include mat.form-field-overrides((
         container-height: 0px,
         container-vertical-padding: 10px,
@@ -55,9 +71,6 @@ mat-paginator {
 }
 
 
-th {
-    background-color: lightskyblue !important;
-}
 
 
 
