@@ -24,7 +24,7 @@
                                         [pattern]="validators.getPattern(c)">
                                 </ng-container>
                                 <ng-template #otherElement>
-                                    <textarea matInput attr.aria-labelledby="{{c}}Label" [(ngModel)]="row[c]" name="{{c}}"
+                                    <textarea matInput cdkTextareaAutosize attr.aria-labelledby="{{c}}Label" [(ngModel)]="row[c]" name="{{c}}"
                                         [minlength]="validators.getColMinLength(c)"
                                         [maxlength]="validators.getColMaxLength(c)"
                                         [required]="validators.isRequired(c)"
