@@ -15,16 +15,45 @@
                             <mat-checkbox aria-labelledby="{{c}}Label" [(ngModel)]="row[c]" name={{c}}></mat-checkbox>
                         }
                         @else {
-                                <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                            <mat-form-field #formField appearance="outline" subscriptSizing="dynamic">
+                                <ng-container *ngIf="!isExpanded(formField); else otherElement">
+                                    <input matInput attr.aria-labelledby="{{c}}Label" type="text" [(ngModel)]="row[c]" name="{{c}}"
+                                        [minlength]="validators.getColMinLength(c)"
+                                        [maxlength]="validators.getColMaxLength(c)"
+                                        [required]="validators.isRequired(c)"
+                                        [pattern]="validators.getPattern(c)">
+                                </ng-container>
+                                <ng-template #otherElement>
+                                    <textarea matInput attr.aria-labelledby="{{c}}Label" [(ngModel)]="row[c]" name="{{c}}"
+                                        [minlength]="validators.getColMinLength(c)"
+                                        [maxlength]="validators.getColMaxLength(c)"
+                                        [required]="validators.isRequired(c)"
+                                        [pattern]="validators.getPattern(c)">
+                                    </textarea>
+                                </ng-template>
+    
+                                <!-- @if (condition) {   
                                     <input matInput attr.aria-labelledby="{{c}}Label" type="text" [(ngModel)]="row[c]" name={{c}}
                                     [minlength]="validators.getColMinLength(c)"
                                     [maxlength]="validators.getColMaxLength(c)"
                                     [required]="validators.isRequired(c)"
                                     [pattern]="validators.getPattern(c)"
                                     >
-                                    <mat-error>{{validators?.getErrorMsg(c)}}</mat-error>
-                                </mat-form-field>
-                            }
+                                }
+                                @else {
+                                    <textfield matInput attr.aria-labelledby="{{c}}Label" type="text" [(ngModel)]="row[c]" name={{c}}
+                                    [minlength]="validators.getColMinLength(c)"
+                                    [maxlength]="validators.getColMaxLength(c)"
+                                    [required]="validators.isRequired(c)"
+                                    [pattern]="validators.getPattern(c)"
+                                    ></textfield>
+                                }       -->
+                                <mat-error>{{validators?.getErrorMsg(c)}}</mat-error>
+                                <button matSuffix type="button" class="expandBtn" (click)="fieldConverter($event)">
+                                    <svg viewBox="0 0 24 24" width="24px" height="24px" focusable="false" aria-hidden="true"><path d="M7 10l5 5 5-5z"></path></svg>
+                                </button>
+                            </mat-form-field>
+                        }
                     </td>
                 </ng-container>
             }

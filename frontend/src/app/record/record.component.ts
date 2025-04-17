@@ -12,7 +12,7 @@ import { MatDialog } from '@angular/material/dialog';
 import {MatTable, MatTableDataSource, MatTableModule} from '@angular/material/table';
 import { MatButton } from '@angular/material/button';
 import {MatCheckboxModule} from '@angular/material/checkbox';
-import { MatInputModule } from '@angular/material/input';
+import { MatFormField, MatInputModule } from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -117,6 +117,25 @@ export class RecordComponent {
 		}
 		);	
 	}
+
+    fieldConverter(e: Event) {
+        const EXPANDED = "expanded";
+        let btn = e.currentTarget as HTMLInputElement;
+        let formField = btn.closest("mat-form-field");
+        if (!formField) throw Error("Form field not found");
+        if (formField.hasAttribute(EXPANDED)) {
+            formField.removeAttribute(EXPANDED);
+            btn.style.transform = "";
+        } else {
+            formField.setAttribute(EXPANDED, "");
+            btn.style.transform = "rotate(180deg)";
+        }
+    }
+
+    isExpanded(formField: MatFormField) {
+        return formField._elementRef.nativeElement.hasAttribute("expanded");
+    }
+
 
     
     createPlaceHolder(col: string) {
