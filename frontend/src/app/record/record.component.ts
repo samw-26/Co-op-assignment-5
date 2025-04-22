@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, ViewChild, viewChild } from '@angular/core';
+import { Component, Input, viewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Validation } from '../validation';
 import { CheckConstraint, Schema, SubmitInfo } from '../interfaces';
@@ -44,7 +44,6 @@ export class RecordComponent {
     ids!: {[index: string]: string};
 	@Input({required: true}) title!: string;
 	@Input({required: true}) currentTableType!: TableType;
-    @ViewChild(MatTable) table!: MatTable<{[index: string]: any}>;
 
 	record = new MatTableDataSource<{[index: string]: any}>([{}]);
     placeholders: { [index: string]: string } = {}
@@ -115,12 +114,8 @@ export class RecordComponent {
 			},
 			error: e => console.error(e)
 		}
-		);	
+		);
 	}
-
-    addCSSRule(rule: string) {
-        document.head.appendChild(document.createElement("style")).innerHTML=rule;
-    }
     
     createPlaceHolder(col: string) {
         let pattern = this.validators.getPattern(col);
