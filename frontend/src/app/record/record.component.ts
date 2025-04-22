@@ -118,25 +118,9 @@ export class RecordComponent {
 		);	
 	}
 
-    fieldConverter(e: Event) {
-        const EXPANDED = "expanded";
-        let btn = e.currentTarget as HTMLInputElement;
-        let formField = btn.closest("mat-form-field");
-        if (!formField) throw Error("Form field not found");
-        if (formField.hasAttribute(EXPANDED)) {
-            formField.removeAttribute(EXPANDED);
-            btn.style.transform = "";
-        } else {
-            formField.setAttribute(EXPANDED, "");
-            btn.style.transform = "rotate(180deg)";
-        }
+    addCSSRule(rule: string) {
+        document.head.appendChild(document.createElement("style")).innerHTML=rule;
     }
-
-    isExpanded(formField: MatFormField) {
-        return formField._elementRef.nativeElement.hasAttribute("expanded");
-    }
-
-
     
     createPlaceHolder(col: string) {
         let pattern = this.validators.getPattern(col);
