@@ -86,7 +86,7 @@ export class Validation {
 			if (errors['pattern'].requiredPattern == this.defaultPattern) {
 				return 'Field cannot contain leading or trailing spaces.';
 			}
-			return `Incorrect format.`;
+			return `Incorrect format. Must match ${errors['pattern'].requiredPattern}`;
 		}
 		else if (errors['duplicateKey']) {
 			return 'Primary key already exists in table.';
