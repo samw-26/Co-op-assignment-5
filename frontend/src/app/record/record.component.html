@@ -1,7 +1,7 @@
 <h1 class="banner">{{title}}</h1>
 <form #recordForm="ngForm" (ngSubmit)="getSubmitInfo()?.submitFunction()">
-    <div class="error-container">
-        <p class="error-msg" [hidden]="!submitError">{{submitError}}</p>
+    <div class="error-container" aria-live="assertive">
+        <p  class="error-msg" [hidden]="!submitError">{{submitError}}</p>
 	</div>
 	<div class="tableContainer">
         <table mat-table [dataSource]="record" fixedLayout="true">
