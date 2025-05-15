@@ -8,7 +8,7 @@ import {ServerResponse, PrimaryKey} from '@frontend/app/interfaces'
 
 const app = express();
 const port = 5000;
-const config: string = "server=ON44C03490451\\MSSQLSERVER01;Database=pubs;Trusted_Connection=true;Driver={SQL Server}"
+const config: string = "server=OPS-PF434H77\\SQLEXPRESS;Database=pubs;Trusted_Connection=true;Driver={SQL Server}"
 
 app.use(cors());
 app.use(express.json());
