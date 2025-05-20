@@ -55,15 +55,6 @@ function sqlQueryWrapper(req: express.Request, res: express.Response, queryStr: 
 }
 
 
-async function getPrimaryKeys(table: string) {
-	const response = await fetch(`http://localhost:5000/api/${table}/pk`);
-	if (response.status !== 200) {return null}
-	return await response.json().then(data => data.map((e: PrimaryKey)  => {
-        return e.Column_Name;
-    }));
-}
-
-
 async function addQueryConditions(table:string, ids: Query, baseQuery: string) {
     let queryStr = baseQuery;
     let counter = 0;
